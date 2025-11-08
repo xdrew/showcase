@@ -50,24 +50,37 @@ This website visualizes the Monad ecosystem as a biological neural network, wher
 
 ## 🚀 Getting Started
 
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
 ### Installation
 
 \`\`\`bash
+# Install dependencies
 npm install
+
+# If you encounter peer dependency warnings (they're safe to ignore)
+# Or use: npm install --legacy-peer-deps
 \`\`\`
 
 ### Development
 
 \`\`\`bash
+# Start development server
 npm run dev
 \`\`\`
 
 Open [http://localhost:3000](http://localhost:3000) to explore the neural network.
 
-### Build
+### Production Build
 
 \`\`\`bash
+# Build for production
 npm run build
+
+# Start production server
 npm start
 \`\`\`
 
