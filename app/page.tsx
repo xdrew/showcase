@@ -6,19 +6,22 @@ import { ProjectPanel } from '@/components/ProjectPanel';
 import { SearchBar } from '@/components/SearchBar';
 
 // Dynamically import Scene to avoid SSR issues with Three.js
-const Scene = dynamic(() => import('@/components/Scene').then(mod => ({ default: mod.Scene })), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="glass-strong organic px-8 py-4">
-        <div className="flex items-center gap-3">
-          <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
-          <span className="text-lg">Loading Neural Network...</span>
+const Scene = dynamic(
+  () => import('@/components/Scene').then(mod => ({ default: mod.Scene })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-screen flex items-center justify-center bg-[#0a0a0f]">
+        <div className="glass-strong organic px-8 py-4">
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
+            <span className="text-lg">Loading Neural Network...</span>
+          </div>
         </div>
       </div>
-    </div>
-  ),
-});
+    ),
+  }
+);
 
 export default function Home() {
   return (

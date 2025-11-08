@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars, Environment } from '@react-three/drei';
 import { NeuralNetwork } from './NeuralNetwork';
@@ -36,7 +37,9 @@ export function Scene() {
       <Environment preset="night" />
 
       {/* Neural network */}
-      <NeuralNetwork />
+      <Suspense fallback={null}>
+        <NeuralNetwork />
+      </Suspense>
 
       {/* Camera controls */}
       <OrbitControls
