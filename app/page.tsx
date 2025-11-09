@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { Sidebar } from '@/components/Sidebar';
 import { ProjectPanel } from '@/components/ProjectPanel';
 import { SearchBar } from '@/components/SearchBar';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Dynamically import Scene to avoid SSR issues with Three.js
 const Scene = dynamic(
@@ -27,7 +28,9 @@ export default function Home() {
   return (
     <main className="w-full h-screen overflow-hidden relative">
       {/* 3D Scene */}
-      <Scene />
+      <ErrorBoundary>
+        <Scene />
+      </ErrorBoundary>
 
       {/* UI Overlay */}
       <Sidebar />
