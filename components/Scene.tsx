@@ -40,9 +40,7 @@ export function Scene() {
         style={{ width: '100%', height: '100%' }}
       >
       {/* Background */}
-      {/* @ts-expect-error - React Three Fiber intrinsic elements */}
       <color attach="background" args={['#0a0a0f']} />
-      {/* @ts-expect-error - React Three Fiber intrinsic elements */}
       <fog attach="fog" args={['#0a0a0f', 10, 50]} />
 
       {/* Starfield background */}

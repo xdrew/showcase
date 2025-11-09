@@ -57,11 +57,9 @@ export function Neuron({ project, position, color }: NeuronProps) {
   });
 
   return (
-    /* @ts-expect-error - React Three Fiber intrinsic elements */
     <group position={position}>
       {/* Outer glow */}
       <Sphere ref={glowRef} args={[size, 16, 16]}>
-        {/* @ts-expect-error - React Three Fiber intrinsic elements */}
         <meshBasicMaterial
           color={color}
           transparent
@@ -89,7 +87,6 @@ export function Neuron({ project, position, color }: NeuronProps) {
           setSelectedProject(isSelected ? null : project);
         }}
       >
-        {/* @ts-expect-error - React Three Fiber intrinsic elements */}
         <meshPhysicalMaterial
           color={color}
           emissive={color}
@@ -122,7 +119,6 @@ export function Neuron({ project, position, color }: NeuronProps) {
       {/* Inner core particles effect */}
       {(isHovered || isSelected) && (
         <>
-          {/* @ts-expect-error - React Three Fiber intrinsic elements */}
           <pointLight
             color={color}
             intensity={2}
@@ -130,7 +126,6 @@ export function Neuron({ project, position, color }: NeuronProps) {
           />
         </>
       )}
-      {/* @ts-expect-error - React Three Fiber intrinsic elements */}
     </group>
   );
 }

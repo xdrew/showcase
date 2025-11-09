@@ -40,7 +40,7 @@ This website visualizes the Monad ecosystem as a biological neural network, wher
 ## 🛠️ Technology Stack
 
 - **Next.js 15** - React framework with App Router
-- **React 19** - Latest React with new features
+- **React 18** - Stable React version with full Three.js support
 - **TypeScript** - Type-safe development
 - **Three.js** - 3D graphics engine
 - **React Three Fiber** - React renderer for Three.js
@@ -59,8 +59,8 @@ This website visualizes the Monad ecosystem as a biological neural network, wher
 ### Installation
 
 \`\`\`bash
-# Install dependencies (use --legacy-peer-deps due to React Three Fiber compatibility)
-npm install --legacy-peer-deps
+# Install dependencies
+npm install
 \`\`\`
 
 ### Development
