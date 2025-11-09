@@ -101,12 +101,12 @@ export function Neuron({ project, position, color }: NeuronProps) {
         />
       </Sphere>
 
-      {/* Logo - always visible */}
+      {/* Logo - always visible in front of neuron */}
       {project.logo && (
-        <Billboard position={[0, 0, 0]}>
+        <Billboard position={[0, 0, size * 0.3]}>
           <Html
             center
-            distanceFactor={size * 2}
+            distanceFactor={8}
             style={{
               pointerEvents: 'none',
               userSelect: 'none',
@@ -115,10 +115,18 @@ export function Neuron({ project, position, color }: NeuronProps) {
             <img
               src={project.logo}
               alt={project.name}
-              className="w-12 h-12 rounded-full object-cover"
               style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                objectFit: 'cover',
                 border: `2px solid ${color}`,
-                boxShadow: `0 0 10px ${color}`,
+                boxShadow: `0 0 15px ${color}`,
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              }}
+              onError={(e) => {
+                // Hide image if it fails to load
+                e.currentTarget.style.display = 'none';
               }}
             />
           </Html>
