@@ -20,7 +20,7 @@ export const StarShaderMaterial = shaderMaterial(
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
   `,
-  // Fragment shader - Simplified for compatibility
+  // Fragment shader - Solar surface with plasma effects
   `
     uniform float time;
     uniform vec3 color;
@@ -47,35 +47,64 @@ export const StarShaderMaterial = shaderMaterial(
       return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
     }
 
-    // Simple 2-octave noise
+    // Multi-octave fbm for detailed plasma
     float fbm(vec2 p) {
-      return noise(p) * 0.6 + noise(p * 2.0) * 0.3;
+      float value = 0.0;
+      float amplitude = 0.5;
+      for(int i = 0; i < 4; i++) {
+        value += amplitude * noise(p);
+        p *= 2.0;
+        amplitude *= 0.5;
+      }
+      return value;
     }
 
     void main() {
-      // Surface turbulence with time animation
-      vec2 uv = vUv * 4.0;
-      float n1 = fbm(uv + time * 0.1);
-      float n2 = fbm(uv * 1.5 - time * 0.08);
+      // Multi-layered turbulent surface
+      vec2 uv = vUv * 8.0;
 
-      float surface = n1 * 0.6 + n2 * 0.4;
+      // Large plasma cells (convection zones)
+      float cells = fbm(uv * 0.5 + time * 0.05);
 
-      // Edge glow (fresnel effect)
-      vec3 viewDir = vec3(0.0, 0.0, 1.0);
-      float fresnel = pow(1.0 - abs(dot(normalize(vNormal), viewDir)), 2.0);
+      // Medium turbulence (granulation)
+      float granulation = fbm(uv * 1.5 + time * 0.15);
 
-      // Color mixing - hotter center, cooler edges
-      vec3 hotColor = mix(color, vec3(1.0, 1.0, 0.95), 0.35);
-      vec3 coolColor = color * 0.75;
+      // Fine turbulence (magnetic field lines)
+      float fineTurb = fbm(uv * 3.0 - time * 0.1);
 
-      // Combine surface detail with base color
-      vec3 finalColor = mix(coolColor, hotColor, surface);
+      // Hot spots and flares
+      float hotSpots = noise(uv * 2.0 + time * 0.2);
+      hotSpots = pow(hotSpots, 3.0) * 2.0; // Make them sharp and bright
 
-      // Add edge brightening
-      finalColor += color * fresnel * 0.6;
+      // Combine turbulence layers
+      float surface = cells * 0.3 + granulation * 0.4 + fineTurb * 0.3;
 
-      // Boost overall brightness for star effect
-      finalColor *= 1.4;
+      // Edge glow (fresnel effect - corona)
+      vec3 viewDir = normalize(vPosition);
+      float fresnel = pow(1.0 - abs(dot(normalize(vNormal), viewDir)), 3.0);
+
+      // Color gradient - very hot yellow-white to cooler orange-red
+      vec3 darkColor = color * 0.6; // Deep red/orange
+      vec3 midColor = color; // Base star color
+      vec3 hotColor = mix(color, vec3(1.0, 0.95, 0.8), 0.6); // Hot yellow-white
+      vec3 veryHotColor = vec3(1.0, 1.0, 0.95); // Brightest spots
+
+      // Build the surface color with multiple layers
+      vec3 finalColor = mix(darkColor, midColor, surface);
+      finalColor = mix(finalColor, hotColor, granulation * 0.6);
+
+      // Add hot spots (solar flares)
+      finalColor = mix(finalColor, veryHotColor, hotSpots * 0.4);
+
+      // Add bright edge corona
+      finalColor += color * fresnel * 1.2;
+      finalColor += vec3(1.0, 0.9, 0.7) * fresnel * 0.8;
+
+      // Boost overall intensity
+      finalColor *= 1.6;
+
+      // Add slight pulsation for living star effect
+      finalColor *= 1.0 + sin(time * 1.5) * 0.05;
 
       gl_FragColor = vec4(finalColor, 1.0);
     }

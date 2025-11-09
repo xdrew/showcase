@@ -32,12 +32,8 @@ export function StarSystem({ categoryId, categoryName, color, position }: StarSy
   useFrame(({ clock }) => {
     if (!starRef.current) return;
 
-    // Pulsing star effect
+    // Update shader time for surface animation
     const time = clock.getElapsedTime();
-    const scale = 1 + Math.sin(time * 2) * 0.08;
-    starRef.current.scale.setScalar(scale);
-
-    // Update shader time
     if (starMaterialRef.current) {
       starMaterialRef.current.time = time;
     }
@@ -59,18 +55,6 @@ export function StarSystem({ categoryId, categoryName, color, position }: StarSy
           time={0}
           toneMapped={false}
           key={`star-material-${categoryId}`}
-        />
-      </mesh>
-
-      {/* Single corona glow layer */}
-      <mesh>
-        <sphereGeometry args={[2.2, 16, 16]} />
-        <meshBasicMaterial
-          color={color}
-          transparent
-          opacity={0.15}
-          side={THREE.BackSide}
-          blending={THREE.AdditiveBlending}
         />
       </mesh>
 
