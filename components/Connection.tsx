@@ -46,8 +46,9 @@ export function Connection({ start, end, color, active = false }: ConnectionProp
   });
 
   return (
-    // @ts-ignore - React Three Fiber uses lowercase for Three.js objects
+    // @ts-expect-error - React Three Fiber uses lowercase for Three.js objects
     <line ref={lineRef} geometry={geometry}>
+      {/* @ts-expect-error - React Three Fiber material components */}
       <lineBasicMaterial
         color={color}
         transparent

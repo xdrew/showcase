@@ -109,6 +109,7 @@ export function NeuralNetwork() {
   }, [filteredProjects, selectedProject]);
 
   return (
+    /* @ts-expect-error - React Three Fiber intrinsic elements */
     <group>
       {/* Render connections first (so they're behind neurons) */}
       {connections.map((conn, i) => (
@@ -132,9 +133,13 @@ export function NeuralNetwork() {
       ))}
 
       {/* Ambient particles in background */}
+      {/* @ts-expect-error - React Three Fiber intrinsic elements */}
       <ambientLight intensity={0.2} />
+      {/* @ts-expect-error - React Three Fiber intrinsic elements */}
       <pointLight position={[10, 10, 10]} intensity={0.5} />
+      {/* @ts-expect-error - React Three Fiber intrinsic elements */}
       <pointLight position={[-10, -10, -10]} intensity={0.3} color="#00d4ff" />
+      {/* @ts-expect-error - React Three Fiber intrinsic elements */}
     </group>
   );
 }
