@@ -22,6 +22,7 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<any>(null);
+  const textRef = useRef<any>(null);
   const [hovered, setHovered] = useState(false);
 
   const setHoveredProject = useStore((state) => state.setHoveredProject);
@@ -95,7 +96,7 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
     return (hash % 100) / 100; // 0 to 1
   }, [project.id]);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock, camera }) => {
     if (!meshRef.current || !groupRef.current) return;
 
     const time = clock.getElapsedTime();
@@ -103,6 +104,16 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
     // Update shader time
     if (materialRef.current) {
       materialRef.current.time = time;
+    }
+
+    // Make text always face camera using lookAt
+    if (textRef.current && groupRef.current) {
+      // Get text world position
+      const textWorldPos = new THREE.Vector3();
+      textRef.current.getWorldPosition(textWorldPos);
+
+      // Make text look at camera
+      textRef.current.lookAt(camera.position);
     }
 
     // Rotate planet on its axis (different speeds for variety)
@@ -202,20 +213,19 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
         </mesh>
       )}
 
-      {/* Project name label - always visible when hovered */}
-      {hovered && (
-        <Text
-          position={[0, planetSize + 0.8, 0]}
-          fontSize={0.3}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-          outlineWidth={0.02}
-          outlineColor="#000000"
-        >
-          {project.name}
-        </Text>
-      )}
+      {/* Project name label - always visible and facing camera */}
+      <Text
+        ref={textRef}
+        position={[0, planetSize + 0.8, 0]}
+        fontSize={hovered ? 0.35 : 0.25}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.02}
+        outlineColor="#000000"
+      >
+        {project.name}
+      </Text>
 
       {/* Point light from planet */}
       <pointLight

@@ -22,6 +22,7 @@ export function StarSystem({ categoryId, categoryName, color, position }: StarSy
   const starRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   const starMaterialRef = useRef<any>(null);
+  const textRef = useRef<any>(null);
 
   // Get all projects in this category
   const categoryProjects = projects.filter((p) => p.category === categoryId);
@@ -29,13 +30,23 @@ export function StarSystem({ categoryId, categoryName, color, position }: StarSy
   // Convert color string to THREE.Color
   const starColor = useMemo(() => new THREE.Color(color), [color]);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock, camera }) => {
     if (!starRef.current) return;
 
     // Update shader time for surface animation
     const time = clock.getElapsedTime();
     if (starMaterialRef.current) {
       starMaterialRef.current.time = time;
+    }
+
+    // Make text always face camera using lookAt
+    if (textRef.current && groupRef.current) {
+      // Get text world position
+      const textWorldPos = new THREE.Vector3();
+      textRef.current.getWorldPosition(textWorldPos);
+
+      // Make text look at camera
+      textRef.current.lookAt(camera.position);
     }
 
     // Gentle rotation of entire system
@@ -58,8 +69,9 @@ export function StarSystem({ categoryId, categoryName, color, position }: StarSy
         />
       </mesh>
 
-      {/* Category name label */}
+      {/* Category name label - always facing camera */}
       <Text
+        ref={textRef}
         position={[0, 3, 0]}
         fontSize={0.6}
         color={color}
