@@ -6,10 +6,12 @@ interface StoreState {
   hoveredProject: Project | null;
   selectedCategory: string | null;
   searchQuery: string;
+  rocketPosition: [number, number, number];
   setSelectedProject: (project: Project | null) => void;
   setHoveredProject: (project: Project | null) => void;
   setSelectedCategory: (category: string | null) => void;
   setSearchQuery: (query: string) => void;
+  setRocketPosition: (position: [number, number, number]) => void;
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -17,8 +19,10 @@ export const useStore = create<StoreState>((set) => ({
   hoveredProject: null,
   selectedCategory: null,
   searchQuery: '',
+  rocketPosition: [0, 0, 50],
   setSelectedProject: (project) => set({ selectedProject: project }),
   setHoveredProject: (project) => set({ hoveredProject: project }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
   setSearchQuery: (query) => set({ searchQuery: query }),
+  setRocketPosition: (position) => set({ rocketPosition: position }),
 }));

@@ -2,12 +2,17 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Stars, Environment } from '@react-three/drei';
-import { NeuralNetwork } from './NeuralNetwork';
+import { Stars, PerformanceMonitor } from '@react-three/drei';
+import { Rocket } from './Rocket';
+import { BlackHole } from './BlackHole';
+import { StarSystem } from './StarSystem';
+import { CameraRig } from './CameraRig';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { categories } from '@/data/projects';
 
 export function Scene() {
   const [mounted, setMounted] = useState(false);
+  const [dpr, setDpr] = useState(1.5);
 
   useEffect(() => {
     setMounted(true);
@@ -30,55 +35,80 @@ export function Scene() {
     <div style={{ width: '100%', height: '100vh', position: 'fixed', top: 0, left: 0 }}>
       <Canvas
         camera={{
-          position: [0, 5, 20],
-          fov: 60,
+          position: [0, 10, 60],
+          fov: 75,
         }}
+        dpr={dpr}
         gl={{
-          antialias: true,
+          antialias: false,
           alpha: true,
+          powerPreference: 'high-performance',
         }}
         style={{ width: '100%', height: '100%' }}
       >
-      {/* Background */}
-      <color attach="background" args={['#0a0a0f']} />
-      <fog attach="fog" args={['#0a0a0f', 10, 50]} />
+      {/* Performance monitoring */}
+      <PerformanceMonitor
+        onIncline={() => setDpr(2)}
+        onDecline={() => setDpr(1)}
+      />
+      {/* Deep space background */}
+      <color attach="background" args={['#000005']} />
+      <fog attach="fog" args={['#000005', 50, 200]} />
 
-      {/* Starfield background */}
+      {/* Starfield background - optimized */}
       <Stars
-        radius={100}
-        depth={50}
-        count={5000}
-        factor={4}
+        radius={300}
+        depth={100}
+        count={3000}
+        factor={6}
         saturation={0}
         fade
-        speed={0.5}
+        speed={0.3}
       />
 
-      {/* Environment lighting */}
-      <Environment preset="night" />
+      {/* Ambient lighting */}
+      <ambientLight intensity={0.2} />
 
-      {/* Neural network */}
+      {/* Suspense wrapper for 3D content */}
       <Suspense fallback={null}>
-        <NeuralNetwork />
+        {/* Player-controlled rocket */}
+        <Rocket />
+
+        {/* Central black hole (Monad) */}
+        <BlackHole />
+
+        {/* Star systems arranged in a circle around the black hole */}
+        {categories.map((category, index) => {
+          const angle = (index / categories.length) * Math.PI * 2;
+          const radius = 40; // Distance from black hole
+          const position: [number, number, number] = [
+            Math.cos(angle) * radius,
+            (Math.random() - 0.5) * 10,
+            Math.sin(angle) * radius,
+          ];
+
+          return (
+            <StarSystem
+              key={category.id}
+              categoryId={category.id}
+              categoryName={category.name}
+              color={category.color}
+              position={position}
+            />
+          );
+        })}
       </Suspense>
 
-      {/* Camera controls */}
-      <OrbitControls
-        enableDamping
-        dampingFactor={0.05}
-        minDistance={5}
-        maxDistance={40}
-        maxPolarAngle={Math.PI / 1.5}
-        autoRotate
-        autoRotateSpeed={0.3}
-      />
+      {/* Camera follows the rocket */}
+      <CameraRig />
 
-      {/* Post-processing effects */}
+      {/* Post-processing effects - optimized */}
       <EffectComposer>
         <Bloom
-          intensity={1.5}
-          luminanceThreshold={0.2}
-          luminanceSmoothing={0.9}
+          intensity={1.2}
+          luminanceThreshold={0.5}
+          luminanceSmoothing={0.8}
+          mipmapBlur
         />
       </EffectComposer>
     </Canvas>
