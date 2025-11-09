@@ -2,7 +2,7 @@
 
 import { useRef, useState, useMemo } from 'react';
 import { useFrame, ThreeEvent } from '@react-three/fiber';
-import { Sphere, Html, Billboard } from '@react-three/drei';
+import { Sphere, Html, Decal, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { Project } from '@/data/projects';
 import { useStore } from '@/lib/store';
@@ -16,6 +16,7 @@ interface NeuronProps {
 export function Neuron({ project, position, color }: NeuronProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
+  const outerGlowRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
   const setSelectedProject = useStore((state) => state.setSelectedProject);
@@ -26,51 +27,68 @@ export function Neuron({ project, position, color }: NeuronProps) {
   const isSelected = selectedProject?.id === project.id;
   const isHovered = hoveredProject?.id === project.id;
 
-  // Calculate size based on contract count (more contracts = larger neuron)
+  // Calculate size based on contract count
   const size = useMemo(() => {
-    const baseSize = 0.2;
-    const scale = project.contractCount ? Math.log(project.contractCount + 1) * 0.1 : 0;
-    return Math.min(baseSize + scale, 0.6); // Cap maximum size
+    const baseSize = 0.3;
+    const scale = project.contractCount ? Math.log(project.contractCount + 1) * 0.15 : 0;
+    return Math.min(baseSize + scale, 0.8);
   }, [project.contractCount]);
 
   // Pulse animation
   useFrame((state) => {
-    if (meshRef.current && glowRef.current) {
+    if (meshRef.current && glowRef.current && outerGlowRef.current) {
       const time = state.clock.getElapsedTime();
 
       // Breathing effect
-      const breathe = Math.sin(time * 0.5 + position[0] + position[1]) * 0.05 + 1;
-      meshRef.current.scale.setScalar(breathe * (isHovered || isSelected ? 1.3 : 1));
+      const breathe = Math.sin(time * 0.5 + position[0] + position[1]) * 0.08 + 1;
+      meshRef.current.scale.setScalar(breathe * (isHovered || isSelected ? 1.4 : 1));
 
-      // Glow pulsing
+      // Inner glow pulsing
       const glowPulse = Math.sin(time * 2 + position[0]) * 0.3 + 0.7;
-      glowRef.current.scale.setScalar(breathe * 1.5 * (isHovered || isSelected ? 1.5 : 1));
+      glowRef.current.scale.setScalar(breathe * 1.2 * (isHovered || isSelected ? 1.6 : 1));
 
       if (glowRef.current.material instanceof THREE.MeshBasicMaterial) {
-        glowRef.current.material.opacity = glowPulse * (isHovered || isSelected ? 0.6 : 0.3);
+        glowRef.current.material.opacity = glowPulse * (isHovered || isSelected ? 0.5 : 0.25);
       }
 
-      // Rotation
-      meshRef.current.rotation.y += 0.005;
-      meshRef.current.rotation.x += 0.003;
+      // Outer glow
+      outerGlowRef.current.scale.setScalar(breathe * 1.8 * (isHovered || isSelected ? 2 : 1));
+      if (outerGlowRef.current.material instanceof THREE.MeshBasicMaterial) {
+        outerGlowRef.current.material.opacity = glowPulse * (isHovered || isSelected ? 0.3 : 0.12);
+      }
+
+      // Slower rotation
+      meshRef.current.rotation.y += 0.003;
+      meshRef.current.rotation.x += 0.002;
     }
   });
 
   return (
     <group position={position}>
-      {/* Outer glow */}
-      <Sphere ref={glowRef} args={[size * 1.4, 24, 24]}>
+      {/* Outer glow layer */}
+      <Sphere ref={outerGlowRef} args={[size * 1.8, 32, 32]}>
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.15}
+          opacity={0.12}
+          blending={THREE.AdditiveBlending}
         />
       </Sphere>
 
-      {/* Main neuron sphere */}
+      {/* Inner glow */}
+      <Sphere ref={glowRef} args={[size * 1.2, 32, 32]}>
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.25}
+          blending={THREE.AdditiveBlending}
+        />
+      </Sphere>
+
+      {/* Main neuron sphere with enhanced materials */}
       <Sphere
         ref={meshRef}
-        args={[size, 32, 32]}
+        args={[size, 64, 64]}
         onPointerOver={(e: ThreeEvent<PointerEvent>) => {
           e.stopPropagation();
           setHovered(true);
@@ -90,81 +108,119 @@ export function Neuron({ project, position, color }: NeuronProps) {
         <meshPhysicalMaterial
           color={color}
           emissive={color}
-          emissiveIntensity={isHovered || isSelected ? 1.5 : 0.8}
-          metalness={0.4}
-          roughness={0.1}
-          transmission={0.2}
+          emissiveIntensity={isHovered || isSelected ? 2.0 : 1.2}
+          metalness={0.6}
+          roughness={0.15}
+          transmission={0.15}
+          thickness={0.5}
           transparent
-          opacity={0.95}
+          opacity={0.92}
           clearcoat={1}
-          clearcoatRoughness={0.1}
+          clearcoatRoughness={0.05}
+          envMapIntensity={1.5}
         />
       </Sphere>
 
-      {/* Logo - always visible in front of neuron */}
+      {/* Logo display - rendered as HTML overlay */}
       {project.logo && (
-        <Billboard position={[0, 0, size * 0.3]}>
-          <Html
-            center
-            distanceFactor={8}
+        <Html
+          position={[0, 0, size * 1.1]}
+          center
+          distanceFactor={10}
+          zIndexRange={[100, 0]}
+          style={{
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+        >
+          <div
             style={{
-              pointerEvents: 'none',
-              userSelect: 'none',
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: `3px solid ${color}`,
+              boxShadow: `0 0 20px ${color}, 0 0 40px ${color}40`,
+              backgroundColor: '#0a0a0a',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden',
             }}
           >
             <img
               src={project.logo}
               alt={project.name}
               style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
+                width: '100%',
+                height: '100%',
                 objectFit: 'cover',
-                border: `2px solid ${color}`,
-                boxShadow: `0 0 15px ${color}`,
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                display: 'block',
               }}
               onError={(e) => {
-                // Hide image if it fails to load
                 e.currentTarget.style.display = 'none';
               }}
             />
-          </Html>
-        </Billboard>
+          </div>
+        </Html>
       )}
 
-      {/* Label on hover */}
+      {/* Enhanced label on hover with project info */}
       {(isHovered || isSelected) && (
         <Html
-          position={[0, size + 0.5, 0]}
+          position={[0, size + 0.8, 0]}
           center
-          distanceFactor={6}
+          distanceFactor={8}
           style={{
             pointerEvents: 'none',
             userSelect: 'none',
           }}
         >
-          <div className="glass-strong organic px-4 py-2 text-sm font-semibold shadow-lg max-w-xs">
-            <div className="text-white">{project.name}</div>
+          <div
+            className="glass-strong organic px-5 py-3 text-sm font-semibold shadow-2xl max-w-sm"
+            style={{
+              borderLeft: `4px solid ${color}`,
+              boxShadow: `0 0 30px ${color}40, 0 10px 40px rgba(0,0,0,0.5)`,
+            }}
+          >
+            <div className="text-white font-bold text-base">{project.name}</div>
             {project.subcategory && (
-              <div className="text-xs text-gray-400 mt-0.5">{project.subcategory}</div>
+              <div
+                className="text-xs mt-1 font-medium"
+                style={{ color: color }}
+              >
+                {project.subcategory}
+              </div>
             )}
             {project.description && (
-              <div className="text-xs text-gray-300 mt-1 font-normal max-w-[200px]">
-                {project.description.slice(0, 100)}
-                {project.description.length > 100 && '...'}
+              <div className="text-xs text-gray-300 mt-2 font-normal leading-relaxed">
+                {project.description.slice(0, 120)}
+                {project.description.length > 120 && '...'}
+              </div>
+            )}
+            {project.contractCount && (
+              <div className="text-xs text-gray-400 mt-2">
+                {project.contractCount} contract{project.contractCount > 1 ? 's' : ''}
               </div>
             )}
           </div>
         </Html>
       )}
 
-      {/* Inner core particles effect */}
+      {/* Enhanced point light for selected/hovered state */}
       {(isHovered || isSelected) && (
         <>
           <pointLight
             color={color}
-            intensity={2}
+            intensity={3}
+            distance={5}
+          />
+          {/* Add rim light effect */}
+          <pointLight
+            position={[size * 2, 0, 0]}
+            color={color}
+            intensity={1.5}
             distance={3}
           />
         </>
