@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   webpack: (config) => {
     // Handle canvas for Three.js
     config.externals = [...(config.externals || []), { canvas: 'canvas' }];
@@ -9,4 +8,4 @@ const nextConfig: NextConfig = {
   transpilePackages: ['three'],
 };
 
-export default nextConfig;
+module.exports = nextConfig;

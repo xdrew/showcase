@@ -39,7 +39,7 @@ This website visualizes the Monad ecosystem as a biological neural network, wher
 
 ## 🛠️ Technology Stack
 
-- **Next.js 15** - React framework with App Router
+- **Next.js 14** - React framework with App Router (stable LTS)
 - **React 18** - Stable React version with full Three.js support
 - **TypeScript** - Type-safe development
 - **Three.js** - 3D graphics engine
