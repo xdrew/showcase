@@ -5,6 +5,7 @@ export interface Project {
   subcategory?: string;
   description: string;
   contractCount?: number;
+  logo?: string; // URL to project logo
   links?: {
     website?: string;
     twitter?: string;
@@ -32,6 +33,7 @@ export const projects: Project[] = [
     subcategory: 'Abstraction Infrastructure',
     description: 'Infrastructure layer for AI applications with ZkEVM capabilities',
     contractCount: 2,
+    logo: 'https://avatars.githubusercontent.com/u/174307814?s=200&v=4',
   },
   {
     id: 'kodeus',
@@ -40,6 +42,7 @@ export const projects: Project[] = [
     subcategory: 'Consumer AI',
     description: 'AI agents platform with comprehensive metrics tracking',
     contractCount: 2,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/68ceb77ff5972224015058a3_kodeus-favicon-white.webp',
   },
   {
     id: 'blazpay',
@@ -48,6 +51,7 @@ export const projects: Project[] = [
     subcategory: 'Abstraction Infrastructure',
     description: 'Smart contract abstraction infrastructure with multiple product implementations',
     contractCount: 4,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b911d4f6be2d85fbd30525_Blazpay_logo.webp',
   },
   {
     id: 'gm-agents',
@@ -56,6 +60,7 @@ export const projects: Project[] = [
     subcategory: 'Agent Launchpad',
     description: 'Platform for launching AI agent applications',
     contractCount: 1,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/687816d9af2f69162a3cf9fc_gm%20logo%20_400x400.webp',
   },
   {
     id: 'monad-baby',
@@ -64,6 +69,7 @@ export const projects: Project[] = [
     subcategory: 'Agent Launchpad',
     description: 'Agent launchpad implementation on Monad',
     contractCount: 1,
+    logo: 'https://pbs.twimg.com/profile_images/1880656683869519872/7EYcFcaP_400x400.jpg',
   },
   {
     id: 'aicraft',
@@ -72,6 +78,7 @@ export const projects: Project[] = [
     subcategory: 'Agent Launchpad',
     description: 'Interactive AI crafting platform',
     contractCount: 1,
+    logo: 'https://pbs.twimg.com/profile_images/1880316029635088384/aAG0Rj3Q_400x400.jpg',
   },
   {
     id: 'proof-of-skill',
@@ -80,6 +87,7 @@ export const projects: Project[] = [
     subcategory: 'Consumer AI',
     description: 'Skill verification and validation protocol',
     contractCount: 1,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67cb7895e1046bc1bf640a67__0FqUZLR_400x400.webp',
   },
   {
     id: 'codatta',
@@ -88,6 +96,7 @@ export const projects: Project[] = [
     subcategory: 'Data',
     description: 'Data collection and labeling infrastructure',
     contractCount: 2,
+    logo: 'https://pbs.twimg.com/profile_images/1785659127866040320/UQM-BVvE_400x400.jpg',
   },
 
   // DeFi - DEX
@@ -98,6 +107,7 @@ export const projects: Project[] = [
     subcategory: 'DEX',
     description: 'Full-featured DEX with V2/V3 pools, universal router, and position management',
     contractCount: 25,
+    logo: 'https://cryptologos.cc/logos/uniswap-uni-logo.png',
   },
   {
     id: 'pancakeswap',
@@ -106,6 +116,7 @@ export const projects: Project[] = [
     subcategory: 'DEX',
     description: 'Multi-version DEX with routing and quoter functions',
     contractCount: 15,
+    logo: 'https://cryptologos.cc/logos/pancakeswap-cake-logo.png',
   },
   {
     id: 'clober',
@@ -114,6 +125,7 @@ export const projects: Project[] = [
     subcategory: 'DEX',
     description: 'Order book DEX with advanced routing capabilities',
     contractCount: 8,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67bebcb9cf681db7a60d2e22_clober.webp',
   },
   {
     id: 'skate-amm',
@@ -122,6 +134,7 @@ export const projects: Project[] = [
     subcategory: 'DEX',
     description: 'AMM with periphery management and specific pool pairs',
     contractCount: 5,
+    logo: 'https://pbs.twimg.com/profile_images/1838924651099901952/bvYeAr22_400x400.jpg',
   },
   {
     id: 'swaap',
@@ -130,6 +143,7 @@ export const projects: Project[] = [
     subcategory: 'DEX',
     description: 'Safeguard vault-based DEX protocol',
     contractCount: 3,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91ab56ae7e18300e3da8d_Swaap_logo.webp',
   },
   {
     id: 'balancer',
@@ -138,6 +152,7 @@ export const projects: Project[] = [
     subcategory: 'DEX',
     description: 'Multi-token liquidity protocol',
     contractCount: 12,
+    logo: 'https://cryptologos.cc/logos/balancer-bal-logo.png',
   },
   {
     id: 'ambient',
@@ -146,6 +161,7 @@ export const projects: Project[] = [
     subcategory: 'DEX',
     description: 'Concentrated liquidity DEX',
     contractCount: 6,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b910fa442716854f1f3390_Ambient_logo.webp',
   },
   {
     id: 'monadex',
@@ -154,6 +170,7 @@ export const projects: Project[] = [
     subcategory: 'DEX',
     description: 'Native Monad DEX implementation',
     contractCount: 10,
+    logo: 'https://pbs.twimg.com/profile_images/1851994085434896384/x_Zy68VW_400x400.jpg',
   },
 
   // DeFi - Aggregators
@@ -164,6 +181,7 @@ export const projects: Project[] = [
     subcategory: 'DEX Aggregator',
     description: 'DEX aggregation with diamond proxy architecture',
     contractCount: 4,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/6893bd214907ffb0bd6905ae_Eisen_Symbol.webp',
   },
 
   // DeFi - Lending
@@ -174,6 +192,7 @@ export const projects: Project[] = [
     subcategory: 'Lending',
     description: 'Comprehensive lending platform with 80+ token markets, aTokens, and debt tokens',
     contractCount: 85,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/68d6e9319f6a7484c5ec014c_nvr_logo.webp',
   },
   {
     id: 'timeswap',
@@ -182,6 +201,7 @@ export const projects: Project[] = [
     subcategory: 'Lending',
     description: 'Options-based lending with liquidity tokens and periphery contracts',
     contractCount: 12,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91b1f1610ca8a55c74c2d_Timeswap_logo.webp',
   },
   {
     id: 'townsquare',
@@ -190,6 +210,7 @@ export const projects: Project[] = [
     subcategory: 'Lending',
     description: 'Cross-chain lending hub with spoke architecture',
     contractCount: 8,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91727c0e02b5b7bf189e3_Mu%20Digital_banner.webp',
   },
   {
     id: 'euler',
@@ -198,6 +219,7 @@ export const projects: Project[] = [
     subcategory: 'Lending',
     description: 'Multi-collateral lending protocol',
     contractCount: 15,
+    logo: 'https://cryptologos.cc/logos/euler-eul-logo.png',
   },
   {
     id: 'kinza',
@@ -206,6 +228,7 @@ export const projects: Project[] = [
     subcategory: 'Lending',
     description: 'Lending pool implementation',
     contractCount: 10,
+    logo: 'https://pbs.twimg.com/profile_images/1747569479166885888/EJJ7EtKc_400x400.jpg',
   },
 
   // DeFi - Liquid Staking
@@ -216,6 +239,7 @@ export const projects: Project[] = [
     subcategory: 'Liquid Staking',
     description: 'Staking management system',
     contractCount: 5,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91666632111af82c42e0a_Bima_banner.webp',
   },
   {
     id: 'stakestone',
@@ -224,6 +248,7 @@ export const projects: Project[] = [
     subcategory: 'Liquid Staking',
     description: 'Yield-bearing staked asset token',
     contractCount: 3,
+    logo: 'https://pbs.twimg.com/profile_images/1750073634685763584/ov_MHYpF_400x400.jpg',
   },
   {
     id: 'renzo',
@@ -232,6 +257,7 @@ export const projects: Project[] = [
     subcategory: 'Liquid Staking',
     description: 'Liquid restaking protocol',
     contractCount: 4,
+    logo: 'https://pbs.twimg.com/profile_images/1747319652234489856/WKRFHbBj_400x400.jpg',
   },
 
   // DeFi - Perpetuals
@@ -242,6 +268,7 @@ export const projects: Project[] = [
     subcategory: 'Perpetuals',
     description: 'Full-featured perpetual futures exchange',
     contractCount: 18,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b915b5859d08f0b8d869df_KiloEx_logo.webp',
   },
   {
     id: 'leverup',
@@ -250,6 +277,7 @@ export const projects: Project[] = [
     subcategory: 'Perpetuals',
     description: 'Perpetuals and derivatives with stablecoin issuance',
     contractCount: 8,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/68fe71a6e79a1b8bcd68fa36_logo-400x400.webp',
   },
   {
     id: 'zaros',
@@ -258,6 +286,7 @@ export const projects: Project[] = [
     subcategory: 'Perpetuals',
     description: 'Market making and perps engines',
     contractCount: 12,
+    logo: 'https://pbs.twimg.com/profile_images/1749829287896100864/cV7_xOKS_400x400.jpg',
   },
   {
     id: 'pingu',
@@ -266,6 +295,7 @@ export const projects: Project[] = [
     subcategory: 'Perpetuals',
     description: 'GMX-style perpetuals exchange',
     contractCount: 10,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91927ab78b729a9254691_Pingu%20Exchange_logo.webp',
   },
 
   // DeFi - Other
@@ -276,6 +306,7 @@ export const projects: Project[] = [
     subcategory: 'Launchpad',
     description: 'Token launchpad with tax token implementations',
     contractCount: 3,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b914c8f0b471b3c1bcda4d_Flap_logo.webp',
   },
   {
     id: 'enjoyoors',
@@ -284,6 +315,7 @@ export const projects: Project[] = [
     subcategory: 'Yield',
     description: 'Yield vaults with withdrawal approval',
     contractCount: 2,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/682eef8db64860c25b79c9c6_Enjoyoors_logo.webp',
   },
   {
     id: 'usdc',
@@ -292,6 +324,7 @@ export const projects: Project[] = [
     subcategory: 'Stablecoin',
     description: 'USDC stablecoin deployment',
     contractCount: 1,
+    logo: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png',
   },
   {
     id: 'bima',
@@ -300,6 +333,7 @@ export const projects: Project[] = [
     subcategory: 'CDP',
     description: 'Collateralized debt position protocol',
     contractCount: 6,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b911b7f19afa8887c82193_Bima_logo.webp',
   },
 
   // Gaming
@@ -309,6 +343,7 @@ export const projects: Project[] = [
     category: 'gaming',
     description: 'Full-featured card game ecosystem with avatars, heroes, and marketplace',
     contractCount: 25,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/6802d4ad83a262e9bc52444f_zejJW5VI_400x400.webp',
   },
   {
     id: 'showdown',
@@ -316,6 +351,7 @@ export const projects: Project[] = [
     category: 'gaming',
     description: 'Competitive gaming platform (CS2, Chess, Tournaments)',
     contractCount: 8,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b919f86e9a2707acfe0c32_Showdown_logo.webp',
   },
   {
     id: 'atdawn',
@@ -323,6 +359,7 @@ export const projects: Project[] = [
     category: 'gaming',
     description: 'RPG with weapons, props, and settlements',
     contractCount: 15,
+    logo: 'https://pbs.twimg.com/profile_images/1862908651068555264/8sJQvVmZ_400x400.jpg',
   },
   {
     id: 'monix',
@@ -330,6 +367,7 @@ export const projects: Project[] = [
     category: 'gaming',
     description: 'Metaverse gaming with NFT ownership',
     contractCount: 12,
+    logo: 'https://pbs.twimg.com/profile_images/1880335655996043264/S7qvbKRr_400x400.jpg',
   },
   {
     id: 'treasure-dwarf',
@@ -337,6 +375,7 @@ export const projects: Project[] = [
     category: 'gaming',
     description: 'Mining and battle system game',
     contractCount: 10,
+    logo: 'https://pbs.twimg.com/profile_images/1880638720847593472/k8Qbymq7_400x400.jpg',
   },
 
   // Infrastructure - Interoperability
@@ -347,6 +386,7 @@ export const projects: Project[] = [
     subcategory: 'Interoperability',
     description: 'Cross-chain messaging with gas service',
     contractCount: 6,
+    logo: 'https://pbs.twimg.com/profile_images/1785659127866040320/UQM-BVvE_400x400.jpg',
   },
   {
     id: 'chainlink-ccip',
@@ -355,6 +395,7 @@ export const projects: Project[] = [
     subcategory: 'Interoperability',
     description: 'Cross-chain interoperability protocol',
     contractCount: 8,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67c4e79b975a193baa9b8f85_chainlink.webp',
   },
   {
     id: 'circle-cctp',
@@ -363,6 +404,7 @@ export const projects: Project[] = [
     subcategory: 'Interoperability',
     description: 'Cross-chain transfer protocol',
     contractCount: 3,
+    logo: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png',
   },
   {
     id: 'layerzero',
@@ -371,6 +413,7 @@ export const projects: Project[] = [
     subcategory: 'Interoperability',
     description: 'Cross-chain messaging protocol',
     contractCount: 12,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b9160a6561ec94bfa44b63_LayerZero_logo.webp',
   },
   {
     id: 'wormhole',
@@ -379,6 +422,7 @@ export const projects: Project[] = [
     subcategory: 'Interoperability',
     description: 'Multi-chain messaging and token bridge',
     contractCount: 10,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91bb383812f23336ed80b_Wormhole_logo.webp',
   },
 
   // Infrastructure - Oracles
@@ -389,6 +433,7 @@ export const projects: Project[] = [
     subcategory: 'Oracles',
     description: '50+ price feeds for major assets',
     contractCount: 55,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67c4e79b975a193baa9b8f85_chainlink.webp',
   },
   {
     id: 'chronicle',
@@ -397,6 +442,7 @@ export const projects: Project[] = [
     subcategory: 'Oracles',
     description: '30+ price oracle feeds',
     contractCount: 32,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b912b4b64c5dc668f68208_Chronicle_logo.webp',
   },
   {
     id: 'pyth',
@@ -405,6 +451,7 @@ export const projects: Project[] = [
     subcategory: 'Oracles',
     description: 'Real-time price feeds with entropy',
     contractCount: 15,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b9194dd821392f1940877b_Pyth%20Network_logo.webp',
   },
   {
     id: 'stork',
@@ -413,6 +460,7 @@ export const projects: Project[] = [
     subcategory: 'Oracles',
     description: 'Data feed infrastructure',
     contractCount: 5,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91a95f9180e8745b69181_Stork_logo.webp',
   },
   {
     id: 'switchboard',
@@ -421,6 +469,7 @@ export const projects: Project[] = [
     subcategory: 'Oracles',
     description: 'Oracle aggregation service',
     contractCount: 8,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91abd859d08f0b8dbe03c_Switchboard_logo.webp',
   },
 
   // Infrastructure - Wallets
@@ -431,6 +480,7 @@ export const projects: Project[] = [
     subcategory: 'Wallets',
     description: 'Multi-signature wallet infrastructure',
     contractCount: 12,
+    logo: 'https://pbs.twimg.com/profile_images/1626140681095131142/mYW0kxw5_400x400.jpg',
   },
   {
     id: 'gelato',
@@ -439,6 +489,7 @@ export const projects: Project[] = [
     subcategory: 'Account Abstraction',
     description: 'Relay infrastructure for ERC-2771 transactions',
     contractCount: 6,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b9150ff0b471b3c1bd3109_Gelato_logo.webp',
   },
   {
     id: 'pimlico',
@@ -447,6 +498,7 @@ export const projects: Project[] = [
     subcategory: 'Account Abstraction',
     description: 'EntryPoint and Paymaster implementations',
     contractCount: 4,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b9191884cbdc367d659a3d_Pimlico_logo.webp',
   },
 
   // Infrastructure - Identity
@@ -457,6 +509,7 @@ export const projects: Project[] = [
     subcategory: 'Identity',
     description: 'Domain naming protocol for Monad',
     contractCount: 3,
+    logo: 'https://pbs.twimg.com/profile_images/1838924651099901952/bvYeAr22_400x400.jpg',
   },
   {
     id: 'anima',
@@ -465,6 +518,7 @@ export const projects: Project[] = [
     subcategory: 'Identity',
     description: 'Identity verification protocol',
     contractCount: 2,
+    logo: 'https://pbs.twimg.com/profile_images/1667505090992406529/2TjQKE5T_400x400.jpg',
   },
 
   // NFTs
@@ -474,6 +528,7 @@ export const projects: Project[] = [
     category: 'nft',
     description: 'NFT drop factory and marketplace platform',
     contractCount: 6,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67cb75a56fa2925b3b2e9a89_popy-logo.webp',
   },
   {
     id: 'magic-eden',
@@ -481,6 +536,7 @@ export const projects: Project[] = [
     category: 'nft',
     description: 'Multi-contract NFT marketplace implementation',
     contractCount: 15,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b9165fb9188e59b9a6f675_Magic%20Eden_logo.webp',
   },
   {
     id: 'nfts2me',
@@ -488,6 +544,7 @@ export const projects: Project[] = [
     category: 'nft',
     description: 'Mass minting infrastructure',
     contractCount: 4,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b917409fa4892d6237dc33_NFTs2Me_logo.webp',
   },
   {
     id: 'demask',
@@ -496,6 +553,7 @@ export const projects: Project[] = [
     subcategory: 'NFT Finance',
     description: 'Fractional NFT trading and launchpad',
     contractCount: 8,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b913d97f3041834a54624e_Demask%20Finance_logo.webp',
   },
 
   // Consumer
@@ -506,6 +564,7 @@ export const projects: Project[] = [
     subcategory: 'Betting',
     description: 'Multi-game betting and prediction platform',
     contractCount: 12,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/6883e31a85ccb6f309a67727_4-01.webp',
   },
   {
     id: 'opinion-labs',
@@ -514,6 +573,7 @@ export const projects: Project[] = [
     subcategory: 'Prediction Markets',
     description: 'Conditional token prediction market',
     contractCount: 6,
+    logo: 'https://pbs.twimg.com/profile_images/1713594054042755072/1vQvk8l__400x400.jpg',
   },
   {
     id: 'talentum',
@@ -522,6 +582,7 @@ export const projects: Project[] = [
     subcategory: 'Social',
     description: 'Community engagement and payroll system',
     contractCount: 5,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91ae8c0e02b5b7bf4286a_Talentum_logo.webp',
   },
   {
     id: 'moseiki',
@@ -530,6 +591,7 @@ export const projects: Project[] = [
     subcategory: 'Social',
     description: 'Social handle and post minting',
     contractCount: 3,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b9170ba00e125f94a0c562_Moseiki_logo.webp',
   },
   {
     id: 'blocklive',
@@ -538,6 +600,7 @@ export const projects: Project[] = [
     subcategory: 'Ticketing',
     description: 'Event ticketing on blockchain',
     contractCount: 4,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b911fd7f3041834a53238c_Blocklive_logo.webp',
   },
 
   // DePIN
@@ -547,6 +610,7 @@ export const projects: Project[] = [
     category: 'depin',
     description: 'Decentralized compute infrastructure',
     contractCount: 8,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b910bc10f685d8b1690a43_Acurast_logo.webp',
   },
   {
     id: 'vape-labs',
@@ -554,6 +618,7 @@ export const projects: Project[] = [
     category: 'depin',
     description: 'Data collection network',
     contractCount: 5,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91b0afc64a6c6e43e7e17_The%20Vape%20Labs_logo.webp',
   },
   {
     id: 'skytrade',
@@ -561,5 +626,6 @@ export const projects: Project[] = [
     category: 'depin',
     description: 'RWA and infrastructure registry',
     contractCount: 6,
+    logo: 'https://cdn.prod.website-files.com/669ade140a683001b9f7fd78/67b91a2c1610ca8a55c6a07c_SkyTrade_logo.webp',
   },
 ];

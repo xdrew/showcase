@@ -2,7 +2,7 @@
 
 import { useRef, useState, useMemo } from 'react';
 import { useFrame, ThreeEvent } from '@react-three/fiber';
-import { Sphere, Html } from '@react-three/drei';
+import { Sphere, Html, Billboard } from '@react-three/drei';
 import * as THREE from 'three';
 import { Project } from '@/data/projects';
 import { useStore } from '@/lib/store';
@@ -28,9 +28,9 @@ export function Neuron({ project, position, color }: NeuronProps) {
 
   // Calculate size based on contract count (more contracts = larger neuron)
   const size = useMemo(() => {
-    const baseSize = 0.15;
-    const scale = project.contractCount ? Math.log(project.contractCount + 1) * 0.08 : 0;
-    return baseSize + scale;
+    const baseSize = 0.2;
+    const scale = project.contractCount ? Math.log(project.contractCount + 1) * 0.1 : 0;
+    return Math.min(baseSize + scale, 0.6); // Cap maximum size
   }, [project.contractCount]);
 
   // Pulse animation
@@ -59,11 +59,11 @@ export function Neuron({ project, position, color }: NeuronProps) {
   return (
     <group position={position}>
       {/* Outer glow */}
-      <Sphere ref={glowRef} args={[size, 16, 16]}>
+      <Sphere ref={glowRef} args={[size * 1.4, 24, 24]}>
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.3}
+          opacity={0.15}
         />
       </Sphere>
 
@@ -90,28 +90,63 @@ export function Neuron({ project, position, color }: NeuronProps) {
         <meshPhysicalMaterial
           color={color}
           emissive={color}
-          emissiveIntensity={isHovered || isSelected ? 1.2 : 0.5}
-          metalness={0.3}
-          roughness={0.2}
-          transmission={0.3}
+          emissiveIntensity={isHovered || isSelected ? 1.5 : 0.8}
+          metalness={0.4}
+          roughness={0.1}
+          transmission={0.2}
           transparent
-          opacity={0.9}
+          opacity={0.95}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
         />
       </Sphere>
+
+      {/* Logo - always visible */}
+      {project.logo && (
+        <Billboard position={[0, 0, 0]}>
+          <Html
+            center
+            distanceFactor={size * 2}
+            style={{
+              pointerEvents: 'none',
+              userSelect: 'none',
+            }}
+          >
+            <img
+              src={project.logo}
+              alt={project.name}
+              className="w-12 h-12 rounded-full object-cover"
+              style={{
+                border: `2px solid ${color}`,
+                boxShadow: `0 0 10px ${color}`,
+              }}
+            />
+          </Html>
+        </Billboard>
+      )}
 
       {/* Label on hover */}
       {(isHovered || isSelected) && (
         <Html
-          position={[0, size + 0.3, 0]}
+          position={[0, size + 0.5, 0]}
           center
-          distanceFactor={8}
+          distanceFactor={6}
           style={{
             pointerEvents: 'none',
             userSelect: 'none',
           }}
         >
-          <div className="glass-strong organic px-3 py-1.5 text-xs font-medium whitespace-nowrap">
-            {project.name}
+          <div className="glass-strong organic px-4 py-2 text-sm font-semibold shadow-lg max-w-xs">
+            <div className="text-white">{project.name}</div>
+            {project.subcategory && (
+              <div className="text-xs text-gray-400 mt-0.5">{project.subcategory}</div>
+            )}
+            {project.description && (
+              <div className="text-xs text-gray-300 mt-1 font-normal max-w-[200px]">
+                {project.description.slice(0, 100)}
+                {project.description.length > 100 && '...'}
+              </div>
+            )}
           </div>
         </Html>
       )}
