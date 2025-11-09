@@ -55,15 +55,15 @@ export function Scene() {
       <color attach="background" args={['#000005']} />
       <fog attach="fog" args={['#000005', 50, 200]} />
 
-      {/* Starfield background - optimized */}
+      {/* Starfield background - highly optimized */}
       <Stars
         radius={300}
         depth={100}
-        count={3000}
-        factor={6}
+        count={1500}
+        factor={5}
         saturation={0}
         fade
-        speed={0.3}
+        speed={0.2}
       />
 
       {/* Ambient lighting */}
@@ -81,9 +81,10 @@ export function Scene() {
         {categories.map((category, index) => {
           const angle = (index / categories.length) * Math.PI * 2;
           const radius = 40; // Distance from black hole
+          const height = Math.sin(index * 0.7) * 5; // Varied heights
           const position: [number, number, number] = [
             Math.cos(angle) * radius,
-            (Math.random() - 0.5) * 10,
+            height,
             Math.sin(angle) * radius,
           ];
 

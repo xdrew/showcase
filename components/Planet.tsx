@@ -1,11 +1,15 @@
 'use client';
 
 import { useRef, useState, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Text, MeshDistortMaterial } from '@react-three/drei';
+import { useFrame, extend } from '@react-three/fiber';
+import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { Project } from '@/data/projects';
 import { useStore } from '@/lib/store';
+import { PlanetShaderMaterial } from './PlanetMaterial';
+
+// Register the custom shader material with React Three Fiber
+extend({ PlanetShaderMaterial });
 
 interface PlanetProps {
   project: Project;
@@ -17,55 +21,93 @@ interface PlanetProps {
 export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
+  const materialRef = useRef<any>(null);
   const [hovered, setHovered] = useState(false);
 
   const setHoveredProject = useStore((state) => state.setHoveredProject);
   const setSelectedProject = useStore((state) => state.setSelectedProject);
   const rocketPosition = useStore((state) => state.rocketPosition);
 
-  // Generate planet type based on project ID for consistency
+  // Generate planet type based on project ID and contract count for more variety
   const planetType = useMemo(() => {
+    // Use both project ID and contract count for more varied distribution
     const hash = project.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const contractInfluence = (project.contractCount || 1) * 7;
+    const combined = hash + contractInfluence;
     const types = ['rocky', 'gas', 'ice', 'lava'];
-    return types[hash % types.length];
-  }, [project.id]);
+    return types[combined % types.length];
+  }, [project.id, project.contractCount]);
 
-  // Generate surface colors based on planet type
+  // Map planet type to shader index
+  const planetTypeIndex = useMemo(() => {
+    const typeMap: Record<string, number> = { rocky: 0, gas: 1, ice: 2, lava: 3 };
+    return typeMap[planetType] || 0;
+  }, [planetType]);
+
+  // Generate surface colors based on planet type with more variety
   const surfaceColors = useMemo(() => {
     const baseColor = new THREE.Color(color);
+    // Add variation based on project ID
+    const hash = project.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const variation = (hash % 10) / 20; // 0 to 0.5 variation
+
     switch (planetType) {
       case 'gas':
+        // Gas giants with varied hues
+        const gasHue = baseColor.clone();
+        gasHue.offsetHSL(variation - 0.25, 0, 0);
         return {
-          base: baseColor,
-          secondary: baseColor.clone().multiplyScalar(0.7),
-          accent: baseColor.clone().multiplyScalar(1.3),
+          base: gasHue,
+          secondary: gasHue.clone().multiplyScalar(0.7),
+          accent: gasHue.clone().multiplyScalar(1.4 + variation),
         };
       case 'ice':
+        // Ice planets with cyan to white variation
+        const iceTint = 0.7 + variation * 0.3;
         return {
-          base: new THREE.Color('#b3e5fc'),
-          secondary: new THREE.Color('#e1f5fe'),
+          base: new THREE.Color(iceTint * 0.7, iceTint * 0.95, iceTint),
+          secondary: new THREE.Color(iceTint * 0.88, iceTint * 0.97, iceTint),
           accent: baseColor.clone().multiplyScalar(0.5),
         };
       case 'lava':
+        // Lava planets from orange to yellow-white
+        const lavaTemp = 0.8 + variation * 0.4;
         return {
-          base: new THREE.Color('#ff5722'),
-          secondary: new THREE.Color('#ff9800'),
-          accent: new THREE.Color('#ffeb3b'),
+          base: new THREE.Color(lavaTemp, lavaTemp * 0.3, 0.1),
+          secondary: new THREE.Color(lavaTemp, lavaTemp * 0.6, 0),
+          accent: new THREE.Color(lavaTemp, lavaTemp * 0.9, lavaTemp * 0.3),
         };
       default: // rocky
+        // Rocky planets with terrain variation
+        const rockyBase = baseColor.clone();
+        rockyBase.offsetHSL(variation - 0.25, variation * 0.2, 0);
         return {
-          base: baseColor.clone().multiplyScalar(0.6),
-          secondary: baseColor.clone().multiplyScalar(0.4),
-          accent: baseColor,
+          base: rockyBase.clone().multiplyScalar(0.5 + variation),
+          secondary: rockyBase.clone().multiplyScalar(0.3 + variation * 0.5),
+          accent: rockyBase,
         };
     }
-  }, [planetType, color]);
+  }, [planetType, color, project.id]);
+
+  // Generate unique seed for texture variation
+  const textureSeed = useMemo(() => {
+    const hash = project.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return (hash % 100) / 100; // 0 to 1
+  }, [project.id]);
 
   useFrame(({ clock }) => {
     if (!meshRef.current || !groupRef.current) return;
 
-    // Rotate planet on its axis
-    meshRef.current.rotation.y = clock.getElapsedTime() * 0.5;
+    const time = clock.getElapsedTime();
+
+    // Update shader time
+    if (materialRef.current) {
+      materialRef.current.time = time;
+    }
+
+    // Rotate planet on its axis (different speeds for variety)
+    meshRef.current.rotation.y = time * 0.3;
+    meshRef.current.rotation.x = Math.sin(time * 0.1) * 0.05; // Slight wobble
 
     // Check distance to rocket for auto-hover
     const distance = Math.sqrt(
@@ -83,8 +125,8 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
       setHoveredProject(null);
     }
 
-    // Scale up when hovered
-    const targetScale = hovered ? 1.3 : 1;
+    // Scale up when hovered with bounce effect
+    const targetScale = hovered ? 1.4 : 1;
     groupRef.current.scale.lerp(
       new THREE.Vector3(targetScale, targetScale, targetScale),
       0.1
@@ -96,7 +138,7 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
 
   return (
     <group ref={groupRef} position={position}>
-      {/* Planet sphere with type-specific rendering */}
+      {/* Planet sphere with type-specific rendering - reduced geometry */}
       <mesh
         ref={meshRef}
         onClick={() => setSelectedProject(project)}
@@ -110,130 +152,52 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
         }}
       >
         <sphereGeometry args={[planetSize, 16, 16]} />
-        {planetType === 'gas' ? (
-          <MeshDistortMaterial
-            color={surfaceColors.base}
-            emissive={surfaceColors.accent}
-            emissiveIntensity={hovered ? 0.4 : 0.2}
-            metalness={0.1}
-            roughness={0.8}
-            distort={0.3}
-            speed={1}
-          />
-        ) : (
-          <meshStandardMaterial
-            color={surfaceColors.base}
-            emissive={surfaceColors.accent}
-            emissiveIntensity={hovered ? 0.5 : 0.25}
-            metalness={planetType === 'ice' ? 0.6 : 0.3}
-            roughness={planetType === 'ice' ? 0.2 : 0.8}
-          />
-        )}
+        <planetShaderMaterial
+          ref={materialRef}
+          baseColor={surfaceColors.base}
+          accentColor={surfaceColors.accent}
+          planetType={planetTypeIndex}
+          seed={textureSeed}
+        />
       </mesh>
 
-      {/* Surface details - craters/spots - only when hovered */}
-      {planetType === 'rocky' && hovered && [0, 1].map((i) => {
-        const theta = (i * Math.PI * 2) / 2;
-        const phi = Math.PI / 3;
-        const x = Math.sin(phi) * Math.cos(theta) * planetSize;
-        const y = Math.sin(phi) * Math.sin(theta) * planetSize;
-        const z = Math.cos(phi) * planetSize;
-        return (
-          <mesh key={`crater-${i}`} position={[x, y, z]}>
-            <sphereGeometry args={[planetSize * 0.15, 6, 6]} />
-            <meshStandardMaterial
-              color={surfaceColors.secondary}
-              emissive={surfaceColors.secondary}
-              emissiveIntensity={0.1}
-            />
-          </mesh>
-        );
-      })}
+      {/* Single atmosphere glow layer */}
+      <mesh>
+        <sphereGeometry args={[planetSize * 1.1, 12, 12]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={hovered ? 0.2 : 0.12}
+          side={THREE.BackSide}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
 
-      {/* Gas bands - single band only */}
-      {planetType === 'gas' && (
-        <mesh rotation={[Math.PI / 4, 0, 0]}>
-          <torusGeometry
-            args={[planetSize * 0.95, planetSize * 0.1, 6, 24]}
-          />
-          <meshStandardMaterial
-            color={surfaceColors.secondary}
-            emissive={surfaceColors.secondary}
-            emissiveIntensity={0.3}
-            transparent
-            opacity={0.4}
-          />
-        </mesh>
+      {/* Ice glow effect - only when hovered */}
+      {hovered && planetType === 'ice' && (
+        <pointLight
+          color="#00ffff"
+          intensity={0.8}
+          distance={planetSize * 3}
+        />
       )}
 
-      {/* Ice crystals - reduced and only when hovered */}
-      {planetType === 'ice' && hovered && [0, 1].map((i) => {
-        const angle = i * Math.PI;
-        return (
-          <mesh
-            key={`crystal-${i}`}
-            position={[
-              Math.cos(angle) * planetSize * 0.8,
-              Math.sin(angle) * planetSize * 0.8,
-              0
-            ]}
-          >
-            <octahedronGeometry args={[planetSize * 0.1, 0]} />
-            <meshStandardMaterial
-              color="#ffffff"
-              metalness={0.9}
-              roughness={0.1}
-              emissive="#b3e5fc"
-              emissiveIntensity={0.5}
-              transparent
-              opacity={0.7}
-            />
-          </mesh>
-        );
-      })}
-
-      {/* Lava glow spots - reduced */}
-      {planetType === 'lava' && [0, 1].map((i) => {
-        const theta = i * Math.PI;
-        const phi = Math.PI / 3;
-        const x = Math.sin(phi) * Math.cos(theta) * planetSize * 0.95;
-        const y = Math.sin(phi) * Math.sin(theta) * planetSize * 0.95;
-        const z = Math.cos(phi) * planetSize * 0.95;
-        return (
-          <mesh key={`lava-${i}`} position={[x, y, z]}>
-            <sphereGeometry args={[planetSize * 0.2, 6, 6]} />
-            <meshStandardMaterial
-              color="#ffeb3b"
-              emissive="#ffeb3b"
-              emissiveIntensity={1.5}
-            />
-          </mesh>
-        );
-      })}
-
-      {/* Planet ring for larger projects */}
+      {/* Planetary rings for larger projects - flat and varied */}
       {(project.contractCount || 0) > 10 && (
-        <mesh rotation={[Math.PI / 3, 0, 0]}>
-          <torusGeometry args={[planetSize * 1.4, planetSize * 0.1, 8, 32]} />
-          <meshStandardMaterial
-            color={color}
-            emissive={color}
-            emissiveIntensity={0.4}
-            transparent
-            opacity={0.5}
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <ringGeometry
+            args={[
+              planetSize * 1.4,
+              planetSize * (1.8 + textureSeed * 0.6), // Varied outer radius
+              32
+            ]}
           />
-        </mesh>
-      )}
-
-      {/* Atmosphere glow - only when hovered */}
-      {hovered && (
-        <mesh>
-          <sphereGeometry args={[planetSize * 1.1, 12, 12]} />
           <meshBasicMaterial
-            color={color}
+            color={textureSeed > 0.5 ? '#f0f0f0' : '#d0d0d0'}
             transparent
-            opacity={0.2}
-            side={THREE.BackSide}
+            opacity={hovered ? 0.6 : 0.4}
+            side={THREE.DoubleSide}
+            blending={THREE.AdditiveBlending}
           />
         </mesh>
       )}

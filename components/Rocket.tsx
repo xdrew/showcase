@@ -13,6 +13,7 @@ export function Rocket() {
   const keysPressed = useRef<Set<string>>(new Set());
 
   const setRocketPosition = useStore((state) => state.setRocketPosition);
+  const setRocketRotation = useStore((state) => state.setRocketRotation);
 
   // Rocket physics constants
   const THRUST = 0.015;
@@ -103,12 +104,13 @@ export function Rocket() {
       );
     }
 
-    // Update store with rocket position
+    // Update store with rocket position and rotation
     setRocketPosition(rocketRef.current.position.toArray() as [number, number, number]);
+    setRocketRotation(rocketRef.current.rotation.toArray().slice(0, 3) as [number, number, number]);
   });
 
   return (
-    <group ref={rocketRef} position={[0, 0, 50]}>
+    <group ref={rocketRef} position={[0, 0, 50]} rotation={[0, Math.PI, 0]}>
       {/* Main nose cone - sharp and sleek */}
       <mesh position={[0, 0, 0.65]} rotation={[Math.PI / 2, 0, 0]}>
         <coneGeometry args={[0.25, 0.6, 8]} />

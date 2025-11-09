@@ -8,6 +8,7 @@ import { useStore } from '@/lib/store';
 export function CameraRig() {
   const { camera, gl } = useThree();
   const rocketPosition = useStore((state) => state.rocketPosition);
+  const rocketRotation = useStore((state) => state.rocketRotation);
 
   const targetPosition = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
@@ -34,18 +35,27 @@ export function CameraRig() {
   }, [gl]);
 
   useFrame(() => {
-    // Camera follows rocket from behind and above
+    // Camera follows rocket from behind and above, following rotation
     const rocketPos = new THREE.Vector3(...rocketPosition);
+    const rocketRot = new THREE.Euler(...rocketRotation);
 
-    // Position camera behind and above the rocket with dynamic zoom
-    const offset = new THREE.Vector3(0, 4, zoomDistance.current);
+    // Create offset position behind and above the rocket
+    // Negative Z puts camera behind the rocket (rocket nose points in negative Z)
+    const offset = new THREE.Vector3(0, 4, -zoomDistance.current);
+
+    // Rotate the offset by the rocket's rotation so camera follows turns
+    offset.applyEuler(rocketRot);
+
+    // Set target camera position
     targetPosition.current.copy(rocketPos).add(offset);
 
     // Smoothly interpolate camera position
-    camera.position.lerp(targetPosition.current, 0.05);
+    camera.position.lerp(targetPosition.current, 0.1);
 
-    // Look at the rocket
-    targetLookAt.current.copy(rocketPos);
+    // Look at a point ahead of the rocket (positive Z from camera's perspective)
+    const lookAheadOffset = new THREE.Vector3(0, 1, 10); // Look ahead and slightly up
+    lookAheadOffset.applyEuler(rocketRot);
+    targetLookAt.current.copy(rocketPos).add(lookAheadOffset);
 
     // Smoothly interpolate camera look-at
     const currentLookAt = new THREE.Vector3();
@@ -53,7 +63,7 @@ export function CameraRig() {
     currentLookAt.multiplyScalar(10);
     currentLookAt.add(camera.position);
 
-    currentLookAt.lerp(targetLookAt.current, 0.05);
+    currentLookAt.lerp(targetLookAt.current, 0.1);
     camera.lookAt(currentLookAt);
   });
 
