@@ -45,7 +45,7 @@ export function CameraRig() {
 
     // Handle intro to tour transition
     if (tourStarted && introMode.current) {
-      transitionProgress.current += delta * 0.3; // Smooth 3-second transition
+      transitionProgress.current += delta * 0.5; // Smooth 2-second transition
       if (transitionProgress.current >= 1) {
         introMode.current = false;
         transitionProgress.current = 1;
@@ -53,7 +53,7 @@ export function CameraRig() {
     }
 
     // Intro mode - camera looks at rocket from the front (closeup)
-    if (introMode.current) {
+    if (introMode.current || transitionProgress.current < 1) {
       const rocketPos = new THREE.Vector3(...rocketPosition);
       const rocketRot = new THREE.Euler(...rocketRotation);
 
@@ -67,26 +67,31 @@ export function CameraRig() {
       normalOffset.applyEuler(rocketRot);
       const normalCameraPos = rocketPos.clone().add(normalOffset);
 
-      // Interpolate between intro and normal position
+      // Smooth easing function for more natural transition
       const t = transitionProgress.current;
-      targetPosition.current.lerpVectors(introCameraPos, normalCameraPos, t);
-      camera.position.lerp(targetPosition.current, 0.05);
+      const easedT = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; // Ease in-out quad
+
+      // Interpolate between intro and normal position
+      targetPosition.current.lerpVectors(introCameraPos, normalCameraPos, easedT);
+      camera.position.lerp(targetPosition.current, 0.1);
 
       // Look at rocket during intro, then look ahead during transition
       const lookAheadOffset = new THREE.Vector3(0, 1, 10);
       lookAheadOffset.applyEuler(rocketRot);
       const normalLookAt = rocketPos.clone().add(lookAheadOffset);
 
-      targetLookAt.current.lerpVectors(rocketPos, normalLookAt, t);
+      targetLookAt.current.lerpVectors(rocketPos, normalLookAt, easedT);
 
       const currentLookAt = new THREE.Vector3();
       camera.getWorldDirection(currentLookAt);
       currentLookAt.multiplyScalar(10);
       currentLookAt.add(camera.position);
 
-      currentLookAt.lerp(targetLookAt.current, 0.05);
+      currentLookAt.lerp(targetLookAt.current, 0.1);
       camera.lookAt(currentLookAt);
-      return;
+
+      // Return during transition to prevent other camera modes from interfering
+      if (transitionProgress.current < 1) return;
     }
 
     // Check if we should be in planet view mode

@@ -18,6 +18,7 @@ export function Scene() {
   const [dpr, setDpr] = useState(1.5);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const [showUniverse, setShowUniverse] = useState(false);
   const tourStarted = useStore((state) => state.tourStarted);
 
   useEffect(() => {
@@ -39,6 +40,16 @@ export function Scene() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Delay showing universe elements until camera transition completes
+  useEffect(() => {
+    if (tourStarted) {
+      const timer = setTimeout(() => {
+        setShowUniverse(true);
+      }, 1500); // Show universe 1.5 seconds after tour starts (during camera transition)
+      return () => clearTimeout(timer);
+    }
+  }, [tourStarted]);
 
   return (
     <div style={{ width: '100%', height: '100vh', position: 'fixed', top: 0, left: 0 }}>
@@ -89,8 +100,8 @@ export function Scene() {
         {/* Player-controlled rocket */}
         <Rocket />
 
-        {/* Only show universe elements after tour starts */}
-        {tourStarted && (
+        {/* Only show universe elements after camera transition */}
+        {showUniverse && (
           <>
             {/* Central black hole (Monad) */}
             <BlackHole />

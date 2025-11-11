@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { categories } from '@/data/projects';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,6 +16,18 @@ export function ProjectPanel() {
     setSelectedProject(null);
     setSelectedPlanetPosition(null);
   };
+
+  // Close panel on ESC key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedProject) {
+        handleClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedProject]);
 
   return (
     <AnimatePresence>
