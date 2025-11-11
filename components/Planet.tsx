@@ -97,6 +97,14 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
     return (hash % 100) / 100; // 0 to 1
   }, [project.id]);
 
+  // Load logo texture once and cache it
+  const logoTexture = useMemo(() => {
+    if (!project.logo) return null;
+    const texture = new THREE.TextureLoader().load(project.logo);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  }, [project.logo]);
+
   useFrame(({ clock, camera }) => {
     if (!meshRef.current || !groupRef.current) return;
 
@@ -227,19 +235,29 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
         </mesh>
       )}
 
-      {/* Project name label - always visible and facing camera */}
-      <Text
-        ref={textRef}
-        position={[0, planetSize + 0.8, 0]}
-        fontSize={hovered ? 0.35 : 0.25}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.02}
-        outlineColor="#000000"
-      >
-        {project.name}
-      </Text>
+      {/* Project logo and name label group - always visible and facing camera */}
+      <group ref={textRef} position={[0, planetSize + 0.8, 0]}>
+        {/* Project logo */}
+        {logoTexture && (
+          <mesh position={[0, 0.3, 0]}>
+            <planeGeometry args={[0.4, 0.4]} />
+            <meshBasicMaterial map={logoTexture} transparent opacity={0.95} />
+          </mesh>
+        )}
+
+        {/* Project name */}
+        <Text
+          position={[0, logoTexture ? -0.1 : 0, 0]}
+          fontSize={hovered ? 0.35 : 0.25}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+          outlineWidth={0.02}
+          outlineColor="#000000"
+        >
+          {project.name}
+        </Text>
+      </group>
 
       {/* Point light from planet */}
       <pointLight
