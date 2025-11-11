@@ -7,6 +7,7 @@ import { Rocket } from './Rocket';
 import { BlackHole } from './BlackHole';
 import { StarSystem } from './StarSystem';
 import { CameraRig } from './CameraRig';
+import { RainbowTrailWrapper } from './RainbowTrailWrapper';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { categories } from '@/data/projects';
 
@@ -24,7 +25,7 @@ export function Scene() {
         <div className="glass-strong organic px-8 py-4">
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
-            <span className="text-lg">Initializing 3D Engine...</span>
+            <span className="text-lg">Preparing Space...</span>
           </div>
         </div>
       </div>
@@ -67,7 +68,10 @@ export function Scene() {
       />
 
       {/* Ambient lighting */}
-      <ambientLight intensity={0.2} />
+      <ambientLight intensity={0.5} />
+
+      {/* Directional light for better visibility */}
+      <directionalLight position={[10, 10, 5]} intensity={0.5} />
 
       {/* Suspense wrapper for 3D content */}
       <Suspense fallback={null}>

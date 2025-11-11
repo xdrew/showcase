@@ -17,7 +17,7 @@ const Scene = dynamic(
         <div className="glass-strong organic px-8 py-4">
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
-            <span className="text-lg">Loading Neural Network...</span>
+            <span className="text-lg">Loading Space Explorer...</span>
           </div>
         </div>
       </div>
@@ -34,8 +34,6 @@ export default function Home() {
       </ErrorBoundary>
 
       {/* UI Overlay */}
-      <Sidebar />
-      <SearchBar />
       <ProjectPanel />
       <ControlsOverlay />
 

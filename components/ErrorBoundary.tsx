@@ -34,7 +34,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="glass-strong organic px-8 py-6 max-w-md">
               <div className="text-red-400 text-xl mb-4">⚠️ 3D Rendering Error</div>
               <p className="text-gray-300 mb-4">
-                Failed to initialize the 3D neural network. This may be due to:
+                Failed to initialize the 3D space explorer. This may be due to:
               </p>
               <ul className="text-sm text-gray-400 list-disc list-inside space-y-2">
                 <li>Browser WebGL support issues</li>

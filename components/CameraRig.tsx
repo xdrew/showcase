@@ -13,7 +13,7 @@ export function CameraRig() {
 
   const targetPosition = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
-  const zoomDistance = useRef(10); // Distance from rocket
+  const zoomDistance = useRef(6); // Distance from rocket
   const planetViewMode = useRef(false);
   const planetPosition = useRef(new THREE.Vector3());
 
@@ -80,21 +80,21 @@ export function CameraRig() {
       // Set target camera position
       targetPosition.current.copy(rocketPos).add(offset);
 
-      // Smoothly interpolate camera position
-      camera.position.lerp(targetPosition.current, 0.1);
+      // Smoothly interpolate camera position with more inertia
+      camera.position.lerp(targetPosition.current, 0.05);
 
       // Look at a point ahead of the rocket
       const lookAheadOffset = new THREE.Vector3(0, 1, 10);
       lookAheadOffset.applyEuler(rocketRot);
       targetLookAt.current.copy(rocketPos).add(lookAheadOffset);
 
-      // Smoothly interpolate camera look-at
+      // Smoothly interpolate camera look-at with more inertia
       const currentLookAt = new THREE.Vector3();
       camera.getWorldDirection(currentLookAt);
       currentLookAt.multiplyScalar(10);
       currentLookAt.add(camera.position);
 
-      currentLookAt.lerp(targetLookAt.current, 0.1);
+      currentLookAt.lerp(targetLookAt.current, 0.05);
       camera.lookAt(currentLookAt);
     }
   });

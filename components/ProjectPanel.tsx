@@ -35,42 +35,16 @@ export function ProjectPanel() {
               ✕
             </button>
 
-            {/* Project logo and quick links */}
-            <div className="flex items-center justify-between mb-4">
-              {selectedProject.logo && (
+            {/* Project logo */}
+            {selectedProject.logo && (
+              <div className="flex justify-center mb-4">
                 <img
                   src={selectedProject.logo}
                   alt={`${selectedProject.name} logo`}
-                  className="w-16 h-16 object-contain rounded-lg"
+                  className="w-20 h-20 object-contain rounded-lg"
                 />
-              )}
-
-              {/* Quick access links */}
-              <div className="flex gap-2">
-                {selectedProject.links?.twitter && (
-                  <a
-                    href={selectedProject.links.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="glass organic px-3 py-2 hover:glass-strong transition-all"
-                    title="Twitter/X"
-                  >
-                    <span className="text-lg">𝕏</span>
-                  </a>
-                )}
-                {selectedProject.links?.website && (
-                  <a
-                    href={selectedProject.links.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="glass organic px-3 py-2 hover:glass-strong transition-all"
-                    title="Website"
-                  >
-                    <span className="text-lg">🌐</span>
-                  </a>
-                )}
               </div>
-            </div>
+            )}
 
             {/* Category badge */}
             {category && (
