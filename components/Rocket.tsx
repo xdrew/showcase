@@ -1,8 +1,8 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { useFrame } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { useStore } from '@/lib/store';
 
@@ -15,8 +15,8 @@ export function Rocket() {
   const setRocketPosition = useStore((state) => state.setRocketPosition);
   const setRocketRotation = useStore((state) => state.setRocketRotation);
 
-  // Load the OBJ model
-  const obj = useLoader(OBJLoader, '/molandak.obj');
+  // Load the GLB model
+  const { scene } = useGLTF('/molandak.glb');
 
   // Rocket physics constants
   const THRUST = 0.015;
@@ -44,7 +44,7 @@ export function Rocket() {
 
   // Apply material to the loaded model
   useEffect(() => {
-    if (obj) {
+    if (scene) {
       // Use MeshNormalMaterial which automatically shows geometry through colors
       // This gives depth without needing complex lighting
       const normalMaterial = new THREE.MeshNormalMaterial({
@@ -52,20 +52,14 @@ export function Rocket() {
         side: THREE.DoubleSide,
       });
 
-      // Also create a purple tinted version by mixing normal with color
-      const material = new THREE.MeshBasicMaterial({
-        color: '#9370db',
-        side: THREE.DoubleSide,
-      });
-
-      obj.traverse((child) => {
+      scene.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           // Use normal material to show geometry
           child.material = normalMaterial;
         }
       });
     }
-  }, [obj]);
+  }, [scene]);
 
   useFrame(() => {
     if (!rocketRef.current) return;
@@ -160,8 +154,8 @@ export function Rocket() {
         castShadow={false}
       />
 
-      {/* Load the OBJ model */}
-      <primitive object={obj.clone()} />
+      {/* Load the GLB model */}
+      <primitive object={scene.clone()} />
 
       {/* Bright center light to make model visible */}
       <pointLight
