@@ -10,12 +10,15 @@ export function CameraRig() {
   const rocketPosition = useStore((state) => state.rocketPosition);
   const rocketRotation = useStore((state) => state.rocketRotation);
   const selectedProject = useStore((state) => state.selectedProject);
+  const tourStarted = useStore((state) => state.tourStarted);
 
   const targetPosition = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
   const zoomDistance = useRef(6); // Distance from rocket
   const planetViewMode = useRef(false);
   const planetPosition = useRef(new THREE.Vector3());
+  const introMode = useRef(true);
+  const transitionProgress = useRef(0);
 
   useEffect(() => {
     const handleWheel = (event: WheelEvent) => {
@@ -37,8 +40,54 @@ export function CameraRig() {
     };
   }, [gl]);
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     const selectedPlanetPosition = useStore.getState().selectedPlanetPosition;
+
+    // Handle intro to tour transition
+    if (tourStarted && introMode.current) {
+      transitionProgress.current += delta * 0.3; // Smooth 3-second transition
+      if (transitionProgress.current >= 1) {
+        introMode.current = false;
+        transitionProgress.current = 1;
+      }
+    }
+
+    // Intro mode - camera looks at rocket from the front (closeup)
+    if (introMode.current) {
+      const rocketPos = new THREE.Vector3(...rocketPosition);
+      const rocketRot = new THREE.Euler(...rocketRotation);
+
+      // Position camera much closer and offset to the right so ship appears on the left side
+      const introOffset = new THREE.Vector3(-4, 0, 5);
+      introOffset.applyEuler(rocketRot);
+      const introCameraPos = rocketPos.clone().add(introOffset);
+
+      // Position for normal flight mode
+      const normalOffset = new THREE.Vector3(0, 4, -zoomDistance.current);
+      normalOffset.applyEuler(rocketRot);
+      const normalCameraPos = rocketPos.clone().add(normalOffset);
+
+      // Interpolate between intro and normal position
+      const t = transitionProgress.current;
+      targetPosition.current.lerpVectors(introCameraPos, normalCameraPos, t);
+      camera.position.lerp(targetPosition.current, 0.05);
+
+      // Look at rocket during intro, then look ahead during transition
+      const lookAheadOffset = new THREE.Vector3(0, 1, 10);
+      lookAheadOffset.applyEuler(rocketRot);
+      const normalLookAt = rocketPos.clone().add(lookAheadOffset);
+
+      targetLookAt.current.lerpVectors(rocketPos, normalLookAt, t);
+
+      const currentLookAt = new THREE.Vector3();
+      camera.getWorldDirection(currentLookAt);
+      currentLookAt.multiplyScalar(10);
+      currentLookAt.add(camera.position);
+
+      currentLookAt.lerp(targetLookAt.current, 0.05);
+      camera.lookAt(currentLookAt);
+      return;
+    }
 
     // Check if we should be in planet view mode
     if (selectedPlanetPosition && selectedProject) {

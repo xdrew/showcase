@@ -5,7 +5,7 @@ import { Sidebar } from '@/components/Sidebar';
 import { ProjectPanel } from '@/components/ProjectPanel';
 import { SearchBar } from '@/components/SearchBar';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { ControlsOverlay } from '@/components/ControlsOverlay';
+import { IntroOverlay } from '@/components/IntroOverlay';
 
 // Dynamically import Scene to avoid SSR issues with Three.js
 const Scene = dynamic(
@@ -33,9 +33,11 @@ export default function Home() {
         <Scene />
       </ErrorBoundary>
 
+      {/* Intro Overlay */}
+      <IntroOverlay />
+
       {/* UI Overlay */}
       <ProjectPanel />
-      <ControlsOverlay />
 
       {/* Background gradient overlay */}
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />

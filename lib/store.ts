@@ -9,6 +9,7 @@ interface StoreState {
   rocketPosition: [number, number, number];
   rocketRotation: [number, number, number];
   selectedPlanetPosition: [number, number, number] | null;
+  tourStarted: boolean;
   setSelectedProject: (project: Project | null) => void;
   setHoveredProject: (project: Project | null) => void;
   setSelectedCategory: (category: string | null) => void;
@@ -16,6 +17,7 @@ interface StoreState {
   setRocketPosition: (position: [number, number, number]) => void;
   setRocketRotation: (rotation: [number, number, number]) => void;
   setSelectedPlanetPosition: (position: [number, number, number] | null) => void;
+  setTourStarted: (started: boolean) => void;
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -26,6 +28,7 @@ export const useStore = create<StoreState>((set) => ({
   rocketPosition: [0, 0, 50],
   rocketRotation: [0, Math.PI, 0],
   selectedPlanetPosition: null,
+  tourStarted: false,
   setSelectedProject: (project) => set({ selectedProject: project }),
   setHoveredProject: (project) => set({ hoveredProject: project }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
@@ -33,4 +36,5 @@ export const useStore = create<StoreState>((set) => ({
   setRocketPosition: (position) => set({ rocketPosition: position }),
   setRocketRotation: (rotation) => set({ rocketRotation: rotation }),
   setSelectedPlanetPosition: (position) => set({ selectedPlanetPosition: position }),
+  setTourStarted: (started) => set({ tourStarted: started }),
 }));

@@ -10,30 +10,41 @@ import { CameraRig } from './CameraRig';
 import { RainbowTrailWrapper } from './RainbowTrailWrapper';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { categories } from '@/data/projects';
+import { useStore } from '@/lib/store';
+import { LoadingProgress } from './LoadingProgress';
 
 export function Scene() {
   const [mounted, setMounted] = useState(false);
   const [dpr, setDpr] = useState(1.5);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const tourStarted = useStore((state) => state.tourStarted);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
 
-  if (!mounted) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center bg-[#0a0a0f]">
-        <div className="glass-strong organic px-8 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
-            <span className="text-lg">Preparing Space...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    // Simulate loading progress
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress >= 100) {
+        progress = 100;
+        setLoadingProgress(100);
+        setTimeout(() => setIsLoadingComplete(true), 300);
+        clearInterval(interval);
+      } else {
+        setLoadingProgress(progress);
+      }
+    }, 200);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div style={{ width: '100%', height: '100vh', position: 'fixed', top: 0, left: 0 }}>
+      {/* Loading progress overlay */}
+      <LoadingProgress progress={loadingProgress} isComplete={isLoadingComplete} />
+
       <Canvas
         camera={{
           position: [0, 10, 60],
@@ -78,30 +89,35 @@ export function Scene() {
         {/* Player-controlled rocket */}
         <Rocket />
 
-        {/* Central black hole (Monad) */}
-        <BlackHole />
+        {/* Only show universe elements after tour starts */}
+        {tourStarted && (
+          <>
+            {/* Central black hole (Monad) */}
+            <BlackHole />
 
-        {/* Star systems arranged in a circle around the black hole */}
-        {categories.map((category, index) => {
-          const angle = (index / categories.length) * Math.PI * 2;
-          const radius = 40; // Distance from black hole
-          const height = Math.sin(index * 0.7) * 5; // Varied heights
-          const position: [number, number, number] = [
-            Math.cos(angle) * radius,
-            height,
-            Math.sin(angle) * radius,
-          ];
+            {/* Star systems arranged in a circle around the black hole */}
+            {categories.map((category, index) => {
+              const angle = (index / categories.length) * Math.PI * 2;
+              const radius = 40; // Distance from black hole
+              const height = Math.sin(index * 0.7) * 5; // Varied heights
+              const position: [number, number, number] = [
+                Math.cos(angle) * radius,
+                height,
+                Math.sin(angle) * radius,
+              ];
 
-          return (
-            <StarSystem
-              key={category.id}
-              categoryId={category.id}
-              categoryName={category.name}
-              color={category.color}
-              position={position}
-            />
-          );
-        })}
+              return (
+                <StarSystem
+                  key={category.id}
+                  categoryId={category.id}
+                  categoryName={category.name}
+                  color={category.color}
+                  position={position}
+                />
+              );
+            })}
+          </>
+        )}
       </Suspense>
 
       {/* Camera follows the rocket */}
