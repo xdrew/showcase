@@ -8,12 +8,14 @@ interface StoreState {
   searchQuery: string;
   rocketPosition: [number, number, number];
   rocketRotation: [number, number, number];
+  selectedPlanetPosition: [number, number, number] | null;
   setSelectedProject: (project: Project | null) => void;
   setHoveredProject: (project: Project | null) => void;
   setSelectedCategory: (category: string | null) => void;
   setSearchQuery: (query: string) => void;
   setRocketPosition: (position: [number, number, number]) => void;
   setRocketRotation: (rotation: [number, number, number]) => void;
+  setSelectedPlanetPosition: (position: [number, number, number] | null) => void;
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -23,10 +25,12 @@ export const useStore = create<StoreState>((set) => ({
   searchQuery: '',
   rocketPosition: [0, 0, 50],
   rocketRotation: [0, Math.PI, 0],
+  selectedPlanetPosition: null,
   setSelectedProject: (project) => set({ selectedProject: project }),
   setHoveredProject: (project) => set({ hoveredProject: project }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
   setSearchQuery: (query) => set({ searchQuery: query }),
   setRocketPosition: (position) => set({ rocketPosition: position }),
   setRocketRotation: (rotation) => set({ rocketRotation: rotation }),
+  setSelectedPlanetPosition: (position) => set({ selectedPlanetPosition: position }),
 }));

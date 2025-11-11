@@ -27,6 +27,7 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
 
   const setHoveredProject = useStore((state) => state.setHoveredProject);
   const setSelectedProject = useStore((state) => state.setSelectedProject);
+  const setSelectedPlanetPosition = useStore((state) => state.setSelectedPlanetPosition);
   const rocketPosition = useStore((state) => state.rocketPosition);
 
   // Generate planet type based on project ID and contract count for more variety
@@ -116,6 +117,17 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
       textRef.current.lookAt(camera.position);
     }
 
+    // Update world position for camera zoom
+    const worldPos = new THREE.Vector3();
+    groupRef.current.getWorldPosition(worldPos);
+    const worldPosArray: [number, number, number] = [worldPos.x, worldPos.y, worldPos.z];
+
+    // Update position in store if this planet is selected
+    const selectedProj = useStore.getState().selectedProject;
+    if (selectedProj && selectedProj.id === project.id) {
+      setSelectedPlanetPosition(worldPosArray);
+    }
+
     // Rotate planet on its axis (different speeds for variety)
     meshRef.current.rotation.y = time * 0.3;
     meshRef.current.rotation.x = Math.sin(time * 0.1) * 0.05; // Slight wobble
@@ -152,7 +164,9 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
       {/* Planet sphere with type-specific rendering - reduced geometry */}
       <mesh
         ref={meshRef}
-        onClick={() => setSelectedProject(project)}
+        onClick={() => {
+          setSelectedProject(project);
+        }}
         onPointerOver={() => {
           setHovered(true);
           setHoveredProject(project);

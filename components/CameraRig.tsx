@@ -9,10 +9,13 @@ export function CameraRig() {
   const { camera, gl } = useThree();
   const rocketPosition = useStore((state) => state.rocketPosition);
   const rocketRotation = useStore((state) => state.rocketRotation);
+  const selectedProject = useStore((state) => state.selectedProject);
 
   const targetPosition = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
   const zoomDistance = useRef(10); // Distance from rocket
+  const planetViewMode = useRef(false);
+  const planetPosition = useRef(new THREE.Vector3());
 
   useEffect(() => {
     const handleWheel = (event: WheelEvent) => {
@@ -35,36 +38,65 @@ export function CameraRig() {
   }, [gl]);
 
   useFrame(() => {
-    // Camera follows rocket from behind and above, following rotation
-    const rocketPos = new THREE.Vector3(...rocketPosition);
-    const rocketRot = new THREE.Euler(...rocketRotation);
+    const selectedPlanetPosition = useStore.getState().selectedPlanetPosition;
 
-    // Create offset position behind and above the rocket
-    // Negative Z puts camera behind the rocket (rocket nose points in negative Z)
-    const offset = new THREE.Vector3(0, 4, -zoomDistance.current);
+    // Check if we should be in planet view mode
+    if (selectedPlanetPosition && selectedProject) {
+      planetViewMode.current = true;
+      planetPosition.current.set(...selectedPlanetPosition);
+    } else {
+      planetViewMode.current = false;
+    }
 
-    // Rotate the offset by the rocket's rotation so camera follows turns
-    offset.applyEuler(rocketRot);
+    if (planetViewMode.current) {
+      // Planet view mode - zoom to planet
+      const offset = new THREE.Vector3(3, 2, 5); // Position relative to planet
+      targetPosition.current.copy(planetPosition.current).add(offset);
 
-    // Set target camera position
-    targetPosition.current.copy(rocketPos).add(offset);
+      // Smoothly move camera to planet view
+      camera.position.lerp(targetPosition.current, 0.05);
 
-    // Smoothly interpolate camera position
-    camera.position.lerp(targetPosition.current, 0.1);
+      // Look at the planet
+      targetLookAt.current.copy(planetPosition.current);
 
-    // Look at a point ahead of the rocket (positive Z from camera's perspective)
-    const lookAheadOffset = new THREE.Vector3(0, 1, 10); // Look ahead and slightly up
-    lookAheadOffset.applyEuler(rocketRot);
-    targetLookAt.current.copy(rocketPos).add(lookAheadOffset);
+      const currentLookAt = new THREE.Vector3();
+      camera.getWorldDirection(currentLookAt);
+      currentLookAt.multiplyScalar(10);
+      currentLookAt.add(camera.position);
 
-    // Smoothly interpolate camera look-at
-    const currentLookAt = new THREE.Vector3();
-    camera.getWorldDirection(currentLookAt);
-    currentLookAt.multiplyScalar(10);
-    currentLookAt.add(camera.position);
+      currentLookAt.lerp(targetLookAt.current, 0.05);
+      camera.lookAt(currentLookAt);
+    } else {
+      // Normal mode - follow rocket
+      const rocketPos = new THREE.Vector3(...rocketPosition);
+      const rocketRot = new THREE.Euler(...rocketRotation);
 
-    currentLookAt.lerp(targetLookAt.current, 0.1);
-    camera.lookAt(currentLookAt);
+      // Create offset position behind and above the rocket
+      const offset = new THREE.Vector3(0, 4, -zoomDistance.current);
+
+      // Rotate the offset by the rocket's rotation so camera follows turns
+      offset.applyEuler(rocketRot);
+
+      // Set target camera position
+      targetPosition.current.copy(rocketPos).add(offset);
+
+      // Smoothly interpolate camera position
+      camera.position.lerp(targetPosition.current, 0.1);
+
+      // Look at a point ahead of the rocket
+      const lookAheadOffset = new THREE.Vector3(0, 1, 10);
+      lookAheadOffset.applyEuler(rocketRot);
+      targetLookAt.current.copy(rocketPos).add(lookAheadOffset);
+
+      // Smoothly interpolate camera look-at
+      const currentLookAt = new THREE.Vector3();
+      camera.getWorldDirection(currentLookAt);
+      currentLookAt.multiplyScalar(10);
+      currentLookAt.add(camera.position);
+
+      currentLookAt.lerp(targetLookAt.current, 0.1);
+      camera.lookAt(currentLookAt);
+    }
   });
 
   return null;

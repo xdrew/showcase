@@ -7,8 +7,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 export function ProjectPanel() {
   const selectedProject = useStore((state) => state.selectedProject);
   const setSelectedProject = useStore((state) => state.setSelectedProject);
+  const setSelectedPlanetPosition = useStore((state) => state.setSelectedPlanetPosition);
 
   const category = categories.find(c => c.id === selectedProject?.category);
+
+  const handleClose = () => {
+    setSelectedProject(null);
+    setSelectedPlanetPosition(null);
+  };
 
   return (
     <AnimatePresence>
@@ -23,7 +29,7 @@ export function ProjectPanel() {
           <div className="glass-strong organic p-6 flex-1 overflow-y-auto">
             {/* Close button */}
             <button
-              onClick={() => setSelectedProject(null)}
+              onClick={handleClose}
               className="float-right glass organic px-3 py-1 text-sm hover:glass-strong transition-all"
             >
               ✕
