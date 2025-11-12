@@ -11,9 +11,11 @@ export function Rocket() {
   const velocity = useRef(new THREE.Vector3(0, 0, 0));
   const acceleration = useRef(new THREE.Vector3(0, 0, 0));
   const keysPressed = useRef<Set<string>>(new Set());
+  const engineSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const setRocketPosition = useStore((state) => state.setRocketPosition);
   const setRocketRotation = useStore((state) => state.setRocketRotation);
+  const soundEnabled = useStore((state) => state.soundEnabled);
 
   // Load the GLB model
   const { scene } = useGLTF('/molandak.glb');
@@ -24,13 +26,28 @@ export function Rocket() {
   const MAX_SPEED = 0.5;
   const ROTATION_SPEED = 0.03;
 
+  // Load engine sound
+  useEffect(() => {
+    const audio = new Audio('/rocket-engine.mp3');
+    audio.loop = true;
+    audio.volume = 0.5;
+    engineSoundRef.current = audio;
+
+    return () => {
+      if (engineSoundRef.current) {
+        engineSoundRef.current.pause();
+        engineSoundRef.current = null;
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      keysPressed.current.add(e.key.toLowerCase());
+      keysPressed.current.add(e.code);
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      keysPressed.current.delete(e.key.toLowerCase());
+      keysPressed.current.delete(e.code);
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -75,25 +92,43 @@ export function Rocket() {
     forward.applyQuaternion(rocketRef.current.quaternion);
     right.applyQuaternion(rocketRef.current.quaternion);
 
-    // WASD controls for movement
-    if (keys.has('w')) {
+    // Check if engine should be on (using key codes)
+    const isEngineOn = keys.has('KeyW') || keys.has('KeyS');
+
+    // Control engine sound
+    if (engineSoundRef.current) {
+      if (isEngineOn && soundEnabled) {
+        if (engineSoundRef.current.paused) {
+          engineSoundRef.current.play().catch(() => {
+            // Handle autoplay restrictions
+          });
+        }
+      } else {
+        if (!engineSoundRef.current.paused) {
+          engineSoundRef.current.pause();
+        }
+      }
+    }
+
+    // WASD controls for movement (using key codes - works with any layout)
+    if (keys.has('KeyW')) {
       acceleration.current.add(forward.multiplyScalar(THRUST));
     }
-    if (keys.has('s')) {
+    if (keys.has('KeyS')) {
       acceleration.current.add(forward.multiplyScalar(-THRUST * 0.5));
     }
-    if (keys.has('a')) {
+    if (keys.has('KeyA')) {
       rocketRef.current.rotation.y += ROTATION_SPEED;
     }
-    if (keys.has('d')) {
+    if (keys.has('KeyD')) {
       rocketRef.current.rotation.y -= ROTATION_SPEED;
     }
 
     // Q/E for vertical movement
-    if (keys.has('q')) {
+    if (keys.has('KeyQ')) {
       acceleration.current.add(up.multiplyScalar(THRUST * 0.7));
     }
-    if (keys.has('e')) {
+    if (keys.has('KeyE')) {
       acceleration.current.add(up.multiplyScalar(-THRUST * 0.7));
     }
 

@@ -10,6 +10,7 @@ interface StoreState {
   rocketRotation: [number, number, number];
   selectedPlanetPosition: [number, number, number] | null;
   tourStarted: boolean;
+  soundEnabled: boolean;
   setSelectedProject: (project: Project | null) => void;
   setHoveredProject: (project: Project | null) => void;
   setSelectedCategory: (category: string | null) => void;
@@ -18,6 +19,7 @@ interface StoreState {
   setRocketRotation: (rotation: [number, number, number]) => void;
   setSelectedPlanetPosition: (position: [number, number, number] | null) => void;
   setTourStarted: (started: boolean) => void;
+  setSoundEnabled: (enabled: boolean) => void;
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -29,6 +31,7 @@ export const useStore = create<StoreState>((set) => ({
   rocketRotation: [0, Math.PI, 0],
   selectedPlanetPosition: null,
   tourStarted: false,
+  soundEnabled: true,
   setSelectedProject: (project) => set({ selectedProject: project }),
   setHoveredProject: (project) => set({ hoveredProject: project }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
@@ -37,4 +40,5 @@ export const useStore = create<StoreState>((set) => ({
   setRocketRotation: (rotation) => set({ rocketRotation: rotation }),
   setSelectedPlanetPosition: (position) => set({ selectedPlanetPosition: position }),
   setTourStarted: (started) => set({ tourStarted: started }),
+  setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
 }));
