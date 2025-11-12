@@ -7,16 +7,23 @@ import { categories } from '@/data/projects';
 export function Minimap() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rocketImageRef = useRef<HTMLImageElement | null>(null);
+  const monadImageRef = useRef<HTMLImageElement | null>(null);
   const animationFrameRef = useRef<number>();
   const rocketPosition = useStore((state) => state.rocketPosition);
   const tourStarted = useStore((state) => state.tourStarted);
 
   // Load rocket image
   useEffect(() => {
-    const img = new Image();
-    img.src = '/molandak.png';
-    img.onload = () => {
-      rocketImageRef.current = img;
+    const rocketImg = new Image();
+    rocketImg.src = '/molandak.png';
+    rocketImg.onload = () => {
+      rocketImageRef.current = rocketImg;
+    };
+
+    const monadImg = new Image();
+    monadImg.src = '/monad.svg';
+    monadImg.onload = () => {
+      monadImageRef.current = monadImg;
     };
   }, []);
 
@@ -40,21 +47,27 @@ export function Minimap() {
       const centerY = canvas.height / 2;
       const scale = 2; // Scale factor for world to minimap
 
-      // Draw black hole at center
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 8, 0, Math.PI * 2);
-      const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 8);
-      gradient.addColorStop(0, '#9370db');
-      gradient.addColorStop(1, '#4a2070');
-      ctx.fillStyle = gradient;
-      ctx.fill();
+      // Draw Monad logo at center
+      if (monadImageRef.current) {
+        const monadSize = 30;
+        ctx.save();
+        ctx.globalAlpha = 0.8;
+        ctx.drawImage(
+          monadImageRef.current,
+          centerX - monadSize / 2,
+          centerY - monadSize / 2,
+          monadSize,
+          monadSize
+        );
+        ctx.restore();
 
-      // Add glow around black hole
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 12, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(147, 112, 219, 0.3)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+        // Add glow around Monad
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 20, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(147, 112, 219, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
 
       // Draw star systems
       categories.forEach((category, index) => {
@@ -136,20 +149,17 @@ export function Minimap() {
 
   return (
     <div className="fixed bottom-8 left-8 z-50">
-      <div className="glass-strong organic p-4">
-        <div className="text-xs text-gray-400 mb-2 font-semibold tracking-wider">
+      <div className="backdrop-blur-md bg-black/40 border border-purple-500/20 rounded-xl p-4 shadow-2xl shadow-purple-500/10">
+        <div className="text-xs text-purple-400 mb-3 font-semibold tracking-widest flex items-center gap-2">
+          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse"></span>
           NAVIGATION
         </div>
         <canvas
           ref={canvasRef}
           width={200}
           height={200}
-          className="rounded-lg"
+          className="rounded-lg border border-purple-500/10"
         />
-        <div className="mt-2 text-xs text-gray-500 flex items-center justify-between">
-          <span>⚪ Stars</span>
-          <span className="text-purple-400">🚀 Molanship</span>
-        </div>
       </div>
     </div>
   );
