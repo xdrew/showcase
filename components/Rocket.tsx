@@ -173,38 +173,6 @@ export function Rocket() {
         distance={10}
       />
 
-      {/* Thrust effects when moving */}
-      {keysPressed.current.has('w') && (
-        <group position={[0, 0, -3]}>
-          {/* Main thrust plume - orange/red */}
-          <mesh rotation={[Math.PI / 2, 0, 0]}>
-            <coneGeometry args={[0.8, 3, 8]} />
-            <meshBasicMaterial
-              color="#ff6600"
-              transparent
-              opacity={0.8}
-            />
-          </mesh>
-
-          {/* Inner thrust core - bright yellow */}
-          <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.5]}>
-            <coneGeometry args={[0.4, 2, 6]} />
-            <meshBasicMaterial
-              color="#ffff00"
-              transparent
-              opacity={0.9}
-            />
-          </mesh>
-
-          {/* Thrust glow light */}
-          <pointLight
-            position={[0, 0, -1]}
-            color="#ff6600"
-            intensity={5}
-            distance={15}
-          />
-        </group>
-      )}
     </group>
   );
 }

@@ -8,6 +8,7 @@ import { BlackHole } from './BlackHole';
 import { StarSystem } from './StarSystem';
 import { CameraRig } from './CameraRig';
 import { RainbowTrailWrapper } from './RainbowTrailWrapper';
+import { MonadTrail } from './MonadTrail';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { categories } from '@/data/projects';
 import { useStore } from '@/lib/store';
@@ -99,6 +100,9 @@ export function Scene() {
       <Suspense fallback={null}>
         {/* Player-controlled rocket */}
         <Rocket />
+
+        {/* Monad trail effect */}
+        <MonadTrail />
 
         {/* Only show universe elements after camera transition */}
         {showUniverse && (
