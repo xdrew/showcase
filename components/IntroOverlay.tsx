@@ -18,7 +18,7 @@ export function IntroOverlay() {
 
           <div className="space-y-4 text-gray-300">
             <p>
-              Welcome aboard the Molanship - your vessel for exploring the Monad Ecosystem. Navigate through an interactive 3D universe of projects and applications.
+              Welcome aboard the Molanship - your vessel for exploring the Monad Ecosystem. Navigate through an interactive 3D universe of projects and applications at the speed of 10,000 TPS.
             </p>
 
             <p>
