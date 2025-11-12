@@ -6,6 +6,7 @@ import { ProjectPanel } from '@/components/ProjectPanel';
 import { SearchBar } from '@/components/SearchBar';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { IntroOverlay } from '@/components/IntroOverlay';
+import { Minimap } from '@/components/Minimap';
 
 // Dynamically import Scene to avoid SSR issues with Three.js
 const Scene = dynamic(
@@ -38,6 +39,7 @@ export default function Home() {
 
       {/* UI Overlay */}
       <ProjectPanel />
+      <Minimap />
 
       {/* Background gradient overlay */}
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />

@@ -16,7 +16,7 @@ import { LoadingProgress } from './LoadingProgress';
 
 export function Scene() {
   const [mounted, setMounted] = useState(false);
-  const [dpr, setDpr] = useState(1.5);
+  const [dpr, setDpr] = useState(1); // Start with lower DPR for better performance
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const [showUniverse, setShowUniverse] = useState(false);
@@ -65,30 +65,37 @@ export function Scene() {
         dpr={dpr}
         gl={{
           antialias: false,
-          alpha: true,
+          alpha: false,
           powerPreference: 'high-performance',
+          stencil: false,
+          depth: true,
         }}
+        frameloop={tourStarted ? "always" : "demand"} // Optimize rendering based on state
         style={{ width: '100%', height: '100%' }}
       >
-      {/* Performance monitoring */}
-      <PerformanceMonitor
-        onIncline={() => setDpr(2)}
-        onDecline={() => setDpr(1)}
-      />
+      {/* Performance monitoring - disabled during intro */}
+      {showUniverse && (
+        <PerformanceMonitor
+          onIncline={() => setDpr(1.5)}
+          onDecline={() => setDpr(1)}
+        />
+      )}
       {/* Deep space background */}
       <color attach="background" args={['#000005']} />
       <fog attach="fog" args={['#000005', 50, 200]} />
 
-      {/* Starfield background - highly optimized */}
-      <Stars
-        radius={300}
-        depth={100}
-        count={1500}
-        factor={5}
-        saturation={0}
-        fade
-        speed={0.2}
-      />
+      {/* Starfield background - only show after tour starts */}
+      {showUniverse && (
+        <Stars
+          radius={300}
+          depth={100}
+          count={1000}
+          factor={5}
+          saturation={0}
+          fade
+          speed={0.2}
+        />
+      )}
 
       {/* Ambient lighting */}
       <ambientLight intensity={0.5} />
@@ -138,15 +145,17 @@ export function Scene() {
       {/* Camera follows the rocket */}
       <CameraRig />
 
-      {/* Post-processing effects - optimized */}
-      <EffectComposer>
-        <Bloom
-          intensity={1.2}
-          luminanceThreshold={0.5}
-          luminanceSmoothing={0.8}
-          mipmapBlur
-        />
-      </EffectComposer>
+      {/* Post-processing effects - only enable after universe loads */}
+      {showUniverse && (
+        <EffectComposer>
+          <Bloom
+            intensity={1.0}
+            luminanceThreshold={0.6}
+            luminanceSmoothing={0.9}
+            mipmapBlur
+          />
+        </EffectComposer>
+      )}
     </Canvas>
     </div>
   );

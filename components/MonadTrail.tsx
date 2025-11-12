@@ -17,6 +17,7 @@ export function MonadTrail() {
   const meshRefs = useRef<THREE.Mesh[]>([]);
   const rocketPosition = useStore((state) => state.rocketPosition);
   const rocketRotation = useStore((state) => state.rocketRotation);
+  const tourStarted = useStore((state) => state.tourStarted);
   const spawnTimer = useRef(0);
 
   const MAX_PARTICLES = 150;
@@ -40,6 +41,9 @@ export function MonadTrail() {
   }, [texture]);
 
   useFrame((state, delta) => {
+    // Don't spawn particles during intro for better performance
+    if (!tourStarted) return;
+
     spawnTimer.current += delta;
 
     // Spawn new particle
