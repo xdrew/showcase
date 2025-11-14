@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  monad-showcase:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: monad-showcase
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - monad-network
+
+networks:
+  monad-network:
+    driver: bridge

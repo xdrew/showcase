@@ -59,7 +59,7 @@ export function StarSystem({ categoryId, categoryName, color, position }: StarSy
     <group ref={groupRef} position={position}>
       {/* Central star with shader surface - reduced geometry */}
       <mesh ref={starRef}>
-        <sphereGeometry args={[1.5, 24, 24]} />
+        <sphereGeometry args={[1.5, 16, 16]} />
         <starShaderMaterial
           ref={starMaterialRef}
           color={starColor}

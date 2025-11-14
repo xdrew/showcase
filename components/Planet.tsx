@@ -24,6 +24,7 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
   const materialRef = useRef<any>(null);
   const textRef = useRef<any>(null);
   const [hovered, setHovered] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   const setHoveredProject = useStore((state) => state.setHoveredProject);
   const setSelectedProject = useStore((state) => state.setSelectedProject);
@@ -140,12 +141,22 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
     meshRef.current.rotation.y = time * 0.3;
     meshRef.current.rotation.x = Math.sin(time * 0.1) * 0.05; // Slight wobble
 
-    // Check distance to rocket for auto-hover
+    // Check distance to rocket for auto-hover and culling
     const distance = Math.sqrt(
       Math.pow(position[0] - rocketPosition[0], 2) +
       Math.pow(position[1] - rocketPosition[1], 2) +
       Math.pow(position[2] - rocketPosition[2], 2)
     );
+
+    // Cull planets that are far away for performance
+    const cullingDistance = 100;
+    if (distance > cullingDistance && isVisible) {
+      setIsVisible(false);
+      groupRef.current.visible = false;
+    } else if (distance <= cullingDistance && !isVisible) {
+      setIsVisible(true);
+      groupRef.current.visible = true;
+    }
 
     // Auto-hover when rocket is close
     if (distance < 3 && !hovered) {
@@ -184,7 +195,7 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
           setHoveredProject(null);
         }}
       >
-        <sphereGeometry args={[planetSize, 16, 16]} />
+        <sphereGeometry args={[planetSize, 12, 12]} />
         <planetShaderMaterial
           ref={materialRef}
           baseColor={surfaceColors.base}
@@ -196,7 +207,7 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
 
       {/* Single atmosphere glow layer */}
       <mesh>
-        <sphereGeometry args={[planetSize * 1.1, 12, 12]} />
+        <sphereGeometry args={[planetSize * 1.1, 8, 8]} />
         <meshBasicMaterial
           color={color}
           transparent
@@ -222,7 +233,7 @@ export function Planet({ project, position, color, size = 0.5 }: PlanetProps) {
             args={[
               planetSize * 1.4,
               planetSize * (1.8 + textureSeed * 0.6), // Varied outer radius
-              32
+              24
             ]}
           />
           <meshBasicMaterial

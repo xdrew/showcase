@@ -20,9 +20,9 @@ export function MonadTrail() {
   const tourStarted = useStore((state) => state.tourStarted);
   const spawnTimer = useRef(0);
 
-  const MAX_PARTICLES = 150;
-  const SPAWN_INTERVAL = 0.02; // Spawn every 0.02 seconds (more frequent)
-  const PARTICLE_LIFETIME = 2; // Fade over 2 seconds
+  const MAX_PARTICLES = 60;
+  const SPAWN_INTERVAL = 0.05; // Spawn every 0.05 seconds
+  const PARTICLE_LIFETIME = 1.5; // Fade over 1.5 seconds
   const PARTICLE_SIZE = 0.3;
 
   // Load SVG as texture
