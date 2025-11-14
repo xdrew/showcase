@@ -1,27 +1,38 @@
-# Deployment Guide - Docker with Nginx
+# Deployment Guide - Simple Setup
 
 ## Prerequisites
 - Docker and Docker Compose installed
+- Nginx installed on host
 - Domain/subdomain DNS pointed to server IP
 
-## Step 1: Configure Your Subdomain
-
-Edit `nginx/conf.d/monad-showcase.conf` and replace `showcase.yourdomain.com` with your actual subdomain.
-
-## Step 2: Deploy Everything with Docker
+## Step 1: Deploy Docker Container
 
 ```bash
-# Build and start all containers (Next.js app + Nginx)
+# Build and start the Next.js app
 docker-compose up -d --build
 
-# Verify containers are running
+# Verify it's running
 docker ps
-
-# Check logs
-docker-compose logs -f
+curl http://localhost:3000
 ```
 
-Your site should now be accessible at http://showcase.yourdomain.com
+## Step 2: Configure Host Nginx
+
+```bash
+# Copy the nginx config
+sudo cp nginx-host.conf /etc/nginx/sites-available/showcase.monadungeon.xyz
+
+# Create symbolic link
+sudo ln -s /etc/nginx/sites-available/showcase.monadungeon.xyz /etc/nginx/sites-enabled/
+
+# Test configuration
+sudo nginx -t
+
+# Reload Nginx
+sudo systemctl reload nginx
+```
+
+Your site should now be accessible at http://showcase.monadungeon.xyz
 
 ## Step 3: Setup SSL with Let's Encrypt (Automatic with Certbot)
 
