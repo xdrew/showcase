@@ -174,7 +174,7 @@ export function MobileControls() {
       {/* Toggle Button - Game Controller Icon */}
       <button
         onClick={() => setShowControls(!showControls)}
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] pointer-events-auto glass-strong organic px-4 py-2 rounded-full hover:bg-cyan-500/20 transition-all shadow-lg"
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 pointer-events-auto glass-strong organic px-4 py-2 rounded-full hover:bg-cyan-500/20 transition-all shadow-lg"
         aria-label="Toggle mobile controls"
       >
         <div className="flex items-center gap-2">
@@ -199,7 +199,7 @@ export function MobileControls() {
 
       {/* Joysticks - Only shown when showControls is true */}
       {showControls && (
-        <div className="fixed inset-0 pointer-events-none z-40">
+        <div className="fixed inset-0 pointer-events-none z-10">
           {/* Left Joystick - Thrust and Rotation */}
           <div
             ref={leftJoystickRef}
