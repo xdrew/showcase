@@ -16,6 +16,7 @@ export function Rocket() {
   const setRocketPosition = useStore((state) => state.setRocketPosition);
   const setRocketRotation = useStore((state) => state.setRocketRotation);
   const soundEnabled = useStore((state) => state.soundEnabled);
+  const touchControls = useStore((state) => state.touchControls);
 
   // Load the GLB model
   const { scene } = useGLTF('/molandak.glb');
@@ -92,8 +93,8 @@ export function Rocket() {
     forward.applyQuaternion(rocketRef.current.quaternion);
     right.applyQuaternion(rocketRef.current.quaternion);
 
-    // Check if engine should be on (using key codes)
-    const isEngineOn = keys.has('KeyW') || keys.has('KeyS');
+    // Check if engine should be on (using key codes or touch controls)
+    const isEngineOn = keys.has('KeyW') || keys.has('KeyS') || Math.abs(touchControls.thrust) > 0.1;
 
     // Control engine sound
     if (engineSoundRef.current) {
@@ -130,6 +131,17 @@ export function Rocket() {
     }
     if (keys.has('KeyE')) {
       acceleration.current.add(up.multiplyScalar(-THRUST * 0.7));
+    }
+
+    // Touch controls for mobile
+    if (Math.abs(touchControls.thrust) > 0.05) {
+      acceleration.current.add(forward.multiplyScalar(touchControls.thrust * THRUST));
+    }
+    if (Math.abs(touchControls.rotation) > 0.05) {
+      rocketRef.current.rotation.y -= touchControls.rotation * ROTATION_SPEED;
+    }
+    if (Math.abs(touchControls.vertical) > 0.05) {
+      acceleration.current.add(up.multiplyScalar(touchControls.vertical * THRUST * 0.7));
     }
 
     // Apply acceleration to velocity

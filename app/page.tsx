@@ -8,6 +8,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { IntroOverlay } from '@/components/IntroOverlay';
 import { Minimap } from '@/components/Minimap';
 import { SoundToggle } from '@/components/SoundToggle';
+import { MobileControls } from '@/components/MobileControls';
 
 // Dynamically import Scene to avoid SSR issues with Three.js
 const Scene = dynamic(
@@ -42,6 +43,7 @@ export default function Home() {
       <ProjectPanel />
       <Minimap />
       <SoundToggle />
+      <MobileControls />
 
       {/* Background gradient overlay */}
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />

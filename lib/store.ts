@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 import { Project } from '@/data/projects';
 
+interface TouchControls {
+  thrust: number;
+  rotation: number;
+  vertical: number;
+}
+
 interface StoreState {
   selectedProject: Project | null;
   hoveredProject: Project | null;
@@ -11,6 +17,7 @@ interface StoreState {
   selectedPlanetPosition: [number, number, number] | null;
   tourStarted: boolean;
   soundEnabled: boolean;
+  touchControls: TouchControls;
   setSelectedProject: (project: Project | null) => void;
   setHoveredProject: (project: Project | null) => void;
   setSelectedCategory: (category: string | null) => void;
@@ -20,6 +27,7 @@ interface StoreState {
   setSelectedPlanetPosition: (position: [number, number, number] | null) => void;
   setTourStarted: (started: boolean) => void;
   setSoundEnabled: (enabled: boolean) => void;
+  setTouchControls: (controls: TouchControls) => void;
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -32,6 +40,7 @@ export const useStore = create<StoreState>((set) => ({
   selectedPlanetPosition: null,
   tourStarted: false,
   soundEnabled: true,
+  touchControls: { thrust: 0, rotation: 0, vertical: 0 },
   setSelectedProject: (project) => set({ selectedProject: project }),
   setHoveredProject: (project) => set({ hoveredProject: project }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
@@ -41,4 +50,5 @@ export const useStore = create<StoreState>((set) => ({
   setSelectedPlanetPosition: (position) => set({ selectedPlanetPosition: position }),
   setTourStarted: (started) => set({ tourStarted: started }),
   setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
+  setTouchControls: (controls) => set({ touchControls: controls }),
 }));
