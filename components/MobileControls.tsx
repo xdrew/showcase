@@ -171,34 +171,30 @@ export function MobileControls() {
 
   return (
     <>
-      {/* Toggle Button */}
+      {/* Toggle Button - Game Controller Icon */}
       <button
         onClick={() => setShowControls(!showControls)}
-        className="fixed top-20 right-4 z-50 pointer-events-auto glass-strong organic p-3 rounded-full hover:bg-cyan-500/20 transition-all"
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] pointer-events-auto glass-strong organic px-4 py-2 rounded-full hover:bg-cyan-500/20 transition-all shadow-lg"
         aria-label="Toggle mobile controls"
       >
-        <svg
-          className="w-6 h-6 text-cyan-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          {showControls ? (
+        <div className="flex items-center gap-2">
+          <svg
+            className="w-5 h-5 text-cyan-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-            />
-          )}
-        </svg>
+          </svg>
+          <span className="text-xs text-cyan-300 font-medium">
+            {showControls ? 'Hide Controls' : 'Show Controls'}
+          </span>
+        </div>
       </button>
 
       {/* Joysticks - Only shown when showControls is true */}
@@ -207,17 +203,17 @@ export function MobileControls() {
           {/* Left Joystick - Thrust and Rotation */}
           <div
             ref={leftJoystickRef}
-            className="absolute bottom-8 left-8 w-32 h-32 pointer-events-auto"
+            className="absolute bottom-16 left-4 w-24 h-24 sm:w-28 sm:h-28 pointer-events-auto select-none"
             style={{ touchAction: 'none' }}
           >
             <div className="relative w-full h-full rounded-full bg-gray-900/40 border-2 border-cyan-500/30 backdrop-blur-sm">
               <div
                 ref={leftStickRef}
-                className="absolute top-1/2 left-1/2 w-12 h-12 -ml-6 -mt-6 rounded-full bg-cyan-500/60 border-2 border-cyan-400 transition-transform"
+                className="absolute top-1/2 left-1/2 w-10 h-10 -ml-5 -mt-5 rounded-full bg-cyan-500/60 border-2 border-cyan-400 transition-transform"
                 style={{ transform: 'translate(0, 0)' }}
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-xs text-cyan-300/60 font-bold">MOVE</div>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="text-[10px] text-cyan-300/60 font-bold select-none">MOVE</div>
               </div>
             </div>
           </div>
@@ -225,17 +221,17 @@ export function MobileControls() {
           {/* Right Joystick - Vertical Movement */}
           <div
             ref={rightJoystickRef}
-            className="absolute bottom-8 right-8 w-32 h-32 pointer-events-auto"
+            className="absolute bottom-16 right-4 w-24 h-24 sm:w-28 sm:h-28 pointer-events-auto select-none"
             style={{ touchAction: 'none' }}
           >
             <div className="relative w-full h-full rounded-full bg-gray-900/40 border-2 border-purple-500/30 backdrop-blur-sm">
               <div
                 ref={rightStickRef}
-                className="absolute top-1/2 left-1/2 w-12 h-12 -ml-6 -mt-6 rounded-full bg-purple-500/60 border-2 border-purple-400 transition-transform"
+                className="absolute top-1/2 left-1/2 w-10 h-10 -ml-5 -mt-5 rounded-full bg-purple-500/60 border-2 border-purple-400 transition-transform"
                 style={{ transform: 'translate(0, 0)' }}
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-xs text-purple-300/60 font-bold">UP/DN</div>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="text-[10px] text-purple-300/60 font-bold select-none">UP/DN</div>
               </div>
             </div>
           </div>
