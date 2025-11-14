@@ -23,63 +23,58 @@ docker-compose logs -f
 
 Your site should now be accessible at http://showcase.yourdomain.com
 
-## Step 3: Setup SSL with Let's Encrypt (Recommended)
+## Step 3: Setup SSL with Let's Encrypt (Automatic with Certbot)
 
-### Option A: Using Certbot (Standalone)
+### Easy Setup (Recommended)
 
+1. **Edit the initialization script:**
 ```bash
-# Stop Nginx container temporarily
-docker-compose stop nginx
-
-# Install certbot
-sudo apt update
-sudo apt install certbot
-
-# Get SSL certificate (replace with your subdomain)
-sudo certbot certonly --standalone -d showcase.yourdomain.com
-
-# Copy certificates to nginx/ssl directory
-sudo cp /etc/letsencrypt/live/showcase.yourdomain.com/fullchain.pem nginx/ssl/
-sudo cp /etc/letsencrypt/live/showcase.yourdomain.com/privkey.pem nginx/ssl/
-sudo chmod 644 nginx/ssl/*.pem
-
-# Edit nginx/conf.d/monad-showcase.conf
-# Uncomment the HTTPS block and SSL redirect
-
-# Restart Nginx container
-docker-compose up -d nginx
+nano init-letsencrypt.sh
+# Change EMAIL to your actual email address
 ```
 
-### Option B: Using Certbot with Docker
-
+2. **Run the script:**
 ```bash
-# Run certbot in Docker
-docker run -it --rm \
-  -v /etc/letsencrypt:/etc/letsencrypt \
-  -v /var/lib/letsencrypt:/var/lib/letsencrypt \
-  -p 80:80 \
-  certbot/certbot certonly --standalone \
-  -d showcase.yourdomain.com
+./init-letsencrypt.sh
+```
 
-# Copy certificates to nginx/ssl
-sudo cp /etc/letsencrypt/live/showcase.yourdomain.com/fullchain.pem nginx/ssl/
-sudo cp /etc/letsencrypt/live/showcase.yourdomain.com/privkey.pem nginx/ssl/
-sudo chmod 644 nginx/ssl/*.pem
+3. **Enable HTTPS in Nginx config:**
+```bash
+nano nginx/conf.d/monad-showcase.conf
+# Follow the instructions in the comments:
+# - Uncomment the HTTPS server block
+# - Uncomment the HTTP to HTTPS redirect
+# - Comment out the HTTP location / block
+```
 
-# Restart services
+4. **Restart Nginx:**
+```bash
 docker-compose restart nginx
 ```
 
-## Step 4: Setup Auto-renewal
+### Manual Setup
 
-Add to crontab:
 ```bash
-# Open crontab
-crontab -e
+# Make sure services are running
+docker-compose up -d
 
-# Add this line (runs every day at 3am)
-0 3 * * * certbot renew --quiet && cp /etc/letsencrypt/live/showcase.yourdomain.com/*.pem /path/to/showcase/nginx/ssl/ && docker-compose -f /path/to/showcase/docker-compose.yml restart nginx
+# Request certificate (replace email)
+docker-compose run --rm certbot certonly \
+    --webroot \
+    --webroot-path=/var/www/certbot \
+    --email your-email@example.com \
+    --agree-tos \
+    --no-eff-email \
+    -d showcase.monadungeon.xyz
+
+# Update nginx config (follow Step 3.3 above)
+# Restart nginx
+docker-compose restart nginx
 ```
+
+## Step 4: Auto-renewal
+
+The certbot container automatically renews certificates every 12 hours. No manual intervention needed!
 
 ## DNS Configuration (Namecheap)
 
