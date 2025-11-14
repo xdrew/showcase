@@ -7,7 +7,6 @@ import { Rocket } from './Rocket';
 import { BlackHole } from './BlackHole';
 import { StarSystem } from './StarSystem';
 import { CameraRig } from './CameraRig';
-import { RainbowTrailWrapper } from './RainbowTrailWrapper';
 import { MonadTrail } from './MonadTrail';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { categories } from '@/data/projects';
