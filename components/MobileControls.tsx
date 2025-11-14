@@ -5,6 +5,7 @@ import { useStore } from '@/lib/store';
 
 export function MobileControls() {
   const [isMobile, setIsMobile] = useState(false);
+  const [showControls, setShowControls] = useState(false);
   const setTouchControls = useStore((state) => state.setTouchControls);
 
   const leftJoystickRef = useRef<HTMLDivElement>(null);
@@ -31,7 +32,7 @@ export function MobileControls() {
   }, []);
 
   useEffect(() => {
-    if (!isMobile) return;
+    if (!isMobile || !showControls) return;
 
     const handleTouchStart = (e: TouchEvent) => {
       Array.from(e.changedTouches).forEach((touch) => {
@@ -164,47 +165,82 @@ export function MobileControls() {
       document.removeEventListener('touchend', handleTouchEnd);
       document.removeEventListener('touchcancel', handleTouchEnd);
     };
-  }, [isMobile, setTouchControls]);
+  }, [isMobile, showControls, setTouchControls]);
 
   if (!isMobile) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-40">
-      {/* Left Joystick - Thrust and Rotation */}
-      <div
-        ref={leftJoystickRef}
-        className="absolute bottom-8 left-8 w-32 h-32 pointer-events-auto"
-        style={{ touchAction: 'none' }}
+    <>
+      {/* Toggle Button */}
+      <button
+        onClick={() => setShowControls(!showControls)}
+        className="fixed top-20 right-4 z-50 pointer-events-auto glass-strong organic p-3 rounded-full hover:bg-cyan-500/20 transition-all"
+        aria-label="Toggle mobile controls"
       >
-        <div className="relative w-full h-full rounded-full bg-gray-900/40 border-2 border-cyan-500/30 backdrop-blur-sm">
-          <div
-            ref={leftStickRef}
-            className="absolute top-1/2 left-1/2 w-12 h-12 -ml-6 -mt-6 rounded-full bg-cyan-500/60 border-2 border-cyan-400 transition-transform"
-            style={{ transform: 'translate(0, 0)' }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-xs text-cyan-300/60 font-bold">MOVE</div>
-          </div>
-        </div>
-      </div>
+        <svg
+          className="w-6 h-6 text-cyan-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          {showControls ? (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+            />
+          ) : (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+            />
+          )}
+        </svg>
+      </button>
 
-      {/* Right Joystick - Vertical Movement */}
-      <div
-        ref={rightJoystickRef}
-        className="absolute bottom-8 right-8 w-32 h-32 pointer-events-auto"
-        style={{ touchAction: 'none' }}
-      >
-        <div className="relative w-full h-full rounded-full bg-gray-900/40 border-2 border-purple-500/30 backdrop-blur-sm">
+      {/* Joysticks - Only shown when showControls is true */}
+      {showControls && (
+        <div className="fixed inset-0 pointer-events-none z-40">
+          {/* Left Joystick - Thrust and Rotation */}
           <div
-            ref={rightStickRef}
-            className="absolute top-1/2 left-1/2 w-12 h-12 -ml-6 -mt-6 rounded-full bg-purple-500/60 border-2 border-purple-400 transition-transform"
-            style={{ transform: 'translate(0, 0)' }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-xs text-purple-300/60 font-bold">UP/DN</div>
+            ref={leftJoystickRef}
+            className="absolute bottom-8 left-8 w-32 h-32 pointer-events-auto"
+            style={{ touchAction: 'none' }}
+          >
+            <div className="relative w-full h-full rounded-full bg-gray-900/40 border-2 border-cyan-500/30 backdrop-blur-sm">
+              <div
+                ref={leftStickRef}
+                className="absolute top-1/2 left-1/2 w-12 h-12 -ml-6 -mt-6 rounded-full bg-cyan-500/60 border-2 border-cyan-400 transition-transform"
+                style={{ transform: 'translate(0, 0)' }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-xs text-cyan-300/60 font-bold">MOVE</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Joystick - Vertical Movement */}
+          <div
+            ref={rightJoystickRef}
+            className="absolute bottom-8 right-8 w-32 h-32 pointer-events-auto"
+            style={{ touchAction: 'none' }}
+          >
+            <div className="relative w-full h-full rounded-full bg-gray-900/40 border-2 border-purple-500/30 backdrop-blur-sm">
+              <div
+                ref={rightStickRef}
+                className="absolute top-1/2 left-1/2 w-12 h-12 -ml-6 -mt-6 rounded-full bg-purple-500/60 border-2 border-purple-400 transition-transform"
+                style={{ transform: 'translate(0, 0)' }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-xs text-purple-300/60 font-bold">UP/DN</div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
