@@ -1,5 +1,6 @@
 Dockerfile
 .dockerignore
+docker-compose.yml
 node_modules
 npm-debug.log
 README.md
@@ -7,3 +8,5 @@ README.md
 .git
 .gitignore
 .env*.local
+nginx/
+DEPLOYMENT.md

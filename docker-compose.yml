@@ -7,13 +7,33 @@ services:
       dockerfile: Dockerfile
     container_name: monad-showcase
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     environment:
       - NODE_ENV=production
+    networks:
+      - monad-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: monad-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - monad-showcase
     networks:
       - monad-network
 
 networks:
   monad-network:
     driver: bridge
+
+volumes:
+  nginx-logs:
