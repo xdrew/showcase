@@ -93,7 +93,11 @@ export function MonadTrail() {
         // Fade out based on age
         const lifeRatio = particle.age / PARTICLE_LIFETIME;
         const opacity = Math.max(0, 1 - lifeRatio);
-        mesh.material.opacity = opacity;
+
+        // Type assertion since we know it's MeshBasicMaterial
+        if (mesh.material && !Array.isArray(mesh.material)) {
+          (mesh.material as THREE.MeshBasicMaterial).opacity = opacity;
+        }
 
         // Scale up as it ages (grows from 1x to 2.5x)
         const scale = 1 + lifeRatio * 1.5;
