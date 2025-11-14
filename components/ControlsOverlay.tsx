@@ -30,7 +30,8 @@ export function ControlsOverlay() {
     };
   }, []);
 
-  if (!visible) return null;
+  // Don't show on mobile at all
+  if (!visible || isMobile) return null;
 
   return (
     <div className="fixed bottom-8 left-8 glass-strong organic p-6 max-w-md z-50 animate-fade-in">
@@ -45,72 +46,46 @@ export function ControlsOverlay() {
       </div>
 
       <div className="space-y-3 text-sm">
-        {isMobile ? (
-          <>
-            <div className="flex items-center gap-3">
-              <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[80px] text-center bg-cyan-500/20">
-                Left Stick
-              </div>
-              <span className="text-gray-300">Move & rotate</span>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
+            W
+          </div>
+          <span className="text-gray-300">Forward thrust</span>
+        </div>
 
-            <div className="flex items-center gap-3">
-              <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[80px] text-center bg-purple-500/20">
-                Right Stick
-              </div>
-              <span className="text-gray-300">Up / down</span>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
+            S
+          </div>
+          <span className="text-gray-300">Reverse thrust</span>
+        </div>
 
-            <div className="mt-4 pt-4 border-t border-gray-700">
-              <p className="text-xs text-gray-400">
-                Use the on-screen joysticks to control your rocket. Tap planets to view details.
-              </p>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="flex items-center gap-3">
-              <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
-                W
-              </div>
-              <span className="text-gray-300">Forward thrust</span>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
+            A / D
+          </div>
+          <span className="text-gray-300">Rotate left / right</span>
+        </div>
 
-            <div className="flex items-center gap-3">
-              <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
-                S
-              </div>
-              <span className="text-gray-300">Reverse thrust</span>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
+            Q / E
+          </div>
+          <span className="text-gray-300">Move up / down</span>
+        </div>
 
-            <div className="flex items-center gap-3">
-              <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
-                A / D
-              </div>
-              <span className="text-gray-300">Rotate left / right</span>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
+            Scroll
+          </div>
+          <span className="text-gray-300">Zoom in / out</span>
+        </div>
 
-            <div className="flex items-center gap-3">
-              <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
-                Q / E
-              </div>
-              <span className="text-gray-300">Move up / down</span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="glass px-3 py-1 rounded font-mono text-xs min-w-[60px] text-center">
-                Scroll
-              </div>
-              <span className="text-gray-300">Zoom in / out</span>
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-gray-700">
-              <p className="text-xs text-gray-400">
-                Fly close to planets to view project details. Click on planets to open their information panel.
-              </p>
-            </div>
-          </>
-        )}
+        <div className="mt-4 pt-4 border-t border-gray-700">
+          <p className="text-xs text-gray-400">
+            Fly close to planets to view project details. Click on planets to open their information panel.
+          </p>
+        </div>
       </div>
     </div>
   );

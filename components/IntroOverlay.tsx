@@ -9,9 +9,10 @@ export function IntroOverlay() {
   if (tourStarted) return null;
 
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none">
-      <div className="absolute top-1/2 right-8 -translate-y-1/2 max-w-md pointer-events-auto">
-        <div className="glass-strong organic p-8 space-y-6">
+    <div className="fixed inset-0 z-50 pointer-events-none overflow-y-auto">
+      <div className="min-h-screen flex items-center justify-center md:justify-end p-4 md:pr-8">
+        <div className="max-w-md pointer-events-auto my-8">
+          <div className="glass-strong organic p-8 space-y-6">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             Molanship
           </h1>
@@ -37,12 +38,13 @@ export function IntroOverlay() {
             </div>
           </div>
 
-          <button
-            onClick={() => setTourStarted(true)}
-            className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
-          >
-            Begin Tour
-          </button>
+            <button
+              onClick={() => setTourStarted(true)}
+              className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
+            >
+              Begin Tour
+            </button>
+          </div>
         </div>
       </div>
     </div>
